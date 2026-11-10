@@ -1,0 +1,336 @@
+[
+  {
+    "titulo": "Validar cadastro de produtor sem telefone",
+    "descricaoHtml": "<div>Identificador: CT-1.1.1-02</div><div>Objetivo: verificar que o telefone é opcional no cadastro do produtor.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Criar conta com e-mail e senha; critério \"campos obrigatórios: nome, e-mail, senha, município e UF; telefone opcional\".</div><div>Técnica: partição de equivalência, classe válida sem campo opcional.</div><div>Preparação: app Valence instalado; API Java online; aparelho com internet; e-mail do parâmetro @email ainda não cadastrado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: nome, e-mail, senha, município e UF válidos; telefone vazio. Valores em Parameter values.</div><div>Outputs esperados: conta criada com papel PRODUTOR, tela inicial do produtor aberta e perfil com telefone vazio.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: cadastro recusado por falta de telefone ou mensagem de erro no campo telefone.</div>",
+    "parametros": {
+      "nome": "Produtor Teste Dois",
+      "email": "produtor.teste04@valence.dev",
+      "senha": "Senha@2026",
+      "municipio": "Sertãozinho",
+      "uf": "SP"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com senha de exatamente 8 caracteres",
+    "descricaoHtml": "<div>Identificador: CT-1.1.1-03</div><div>Objetivo: verificar o limite mínimo da senha: 8 caracteres devem ser aceitos.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Criar conta com e-mail e senha; critério \"senha com no mínimo 8 caracteres, gravada somente com hash BCrypt\".</div><div>Técnica: análise de valor limite (limite inferior válido).</div><div>Preparação: app Valence instalado; API Java online; e-mail do parâmetro @email ainda não cadastrado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: senha com exatamente 8 caracteres e demais campos válidos. Valores em Parameter values.</div><div>Outputs esperados: conta criada e login posterior realizado com a mesma senha.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: senha de 8 caracteres recusada ou login posterior falhando.</div>",
+    "parametros": {
+      "nome": "Produtor Teste Tres",
+      "email": "produtor.teste05@valence.dev",
+      "senha": "Abcd@123",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP"
+    }
+  },
+  {
+    "titulo": "Validar que o cadastro público não cria usuário com papel diferente de PRODUTOR",
+    "descricaoHtml": "<div>Identificador: CT-1.1.1-04</div><div>Objetivo: verificar que o cadastro público ignora qualquer papel enviado e sempre cria PRODUTOR.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Criar conta com e-mail e senha; critério \"cadastro público cria o usuário sempre com papel PRODUTOR; AGRONOMO e GESTOR só por seed\".</div><div>Técnica: partição de equivalência, classe inválida (papel não permitido) e teste de permissão por papel.</div><div>Preparação: API Java online; Swagger acessível; e-mail do parâmetro @email ainda não cadastrado.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: dados válidos de cadastro mais o campo papel = GESTOR. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201 com papel PRODUTOR; acesso à fila de análise negado com HTTP 403.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: usuário criado com papel GESTOR ou AGRONOMO, ou acesso liberado à fila de análise.</div>",
+    "parametros": {
+      "nome": "Tentativa Gestor",
+      "email": "tentativa.gestor@valence.dev",
+      "senha": "Senha@2026",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP",
+      "papel": "GESTOR"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com campos obrigatórios em branco",
+    "descricaoHtml": "<div>Identificador: CT-1.1.2-01</div><div>Objetivo: verificar a validação dos campos obrigatórios do cadastro.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Mensagem de dados inválidos ou e-mail já cadastrado; critério \"nome, e-mail, senha, município ou UF em branco recebe HTTP 400 com a lista de campos e mensagens em português\".</div><div>Técnica: partição de equivalência, classe inválida (campos vazios).</div><div>Preparação: app Valence instalado; API Java online; Swagger acessível.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: todos os campos obrigatórios vazios. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com timestamp, status, erro, mensagem, caminho e campos; mensagens junto aos campos no app.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: cadastro concluído, erro sem a lista de campos ou mensagens em outro idioma.</div>",
+    "parametros": {
+      "corpo": "nome, email, senha, municipio e uf vazios"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com e-mail em formato inválido",
+    "descricaoHtml": "<div>Identificador: CT-1.1.2-02</div><div>Objetivo: verificar a recusa de e-mail fora do formato válido.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Mensagem de dados inválidos ou e-mail já cadastrado; critério \"e-mail fora do formato válido recebe HTTP 400 com a mensagem do campo e-mail\".</div><div>Técnica: partição de equivalência, classe inválida (e-mail sem @).</div><div>Preparação: app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: e-mail sem @ e demais campos válidos. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com a mensagem do campo e-mail; dados mantidos na tela.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: conta criada com e-mail inválido ou campos apagados após o erro.</div>",
+    "parametros": {
+      "nome": "Produtor Teste",
+      "senha": "Senha@2026",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP",
+      "email": "produtor.valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com senha de 7 caracteres",
+    "descricaoHtml": "<div>Identificador: CT-1.1.2-03</div><div>Objetivo: verificar o limite mínimo da senha: 7 caracteres devem ser recusados.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Mensagem de dados inválidos ou e-mail já cadastrado; critério \"senha com menos de 8 caracteres recebe HTTP 400 com a mensagem do campo senha\".</div><div>Técnica: análise de valor limite (logo abaixo do limite inferior).</div><div>Preparação: app Valence instalado; API Java online; e-mail do parâmetro @email ainda não cadastrado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: senha com 7 caracteres e demais campos válidos. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com a mensagem do campo senha; nenhuma conta criada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: conta criada com senha de 7 caracteres ou senha exibida na mensagem.</div>",
+    "parametros": {
+      "nome": "Produtor Teste",
+      "email": "produtor.teste06@valence.dev",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP",
+      "senha": "Abc@123"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com UF inexistente",
+    "descricaoHtml": "<div>Identificador: CT-1.1.2-04</div><div>Objetivo: verificar a recusa de UF que não é sigla válida do Brasil.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Mensagem de dados inválidos ou e-mail já cadastrado; critério \"UF que não é sigla válida do Brasil recebe HTTP 400 com a mensagem do campo UF\".</div><div>Técnica: partição de equivalência, classe inválida (sigla inexistente).</div><div>Preparação: app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: UF = XX e demais campos válidos. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com a mensagem do campo UF; nenhuma conta criada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: conta criada com UF inexistente.</div>",
+    "parametros": {
+      "nome": "Produtor Teste",
+      "email": "produtor.teste07@valence.dev",
+      "senha": "Senha@2026",
+      "municipio": "Ribeirão Preto",
+      "uf": "XX"
+    }
+  },
+  {
+    "titulo": "Validar cadastro com e-mail já cadastrado",
+    "descricaoHtml": "<div>Identificador: CT-1.1.2-05</div><div>Objetivo: verificar que o e-mail é único e que a tentativa de duplicar devolve 409.</div><div>PBI e critério de aceite: [Cadastro de usuário] Produtor - Mensagem de dados inválidos ou e-mail já cadastrado; critério \"e-mail já cadastrado recebe HTTP 409 com a mensagem \"E-mail já cadastrado.\" e nenhum usuário novo é criado\".</div><div>Técnica: partição de equivalência, classe inválida (e-mail repetido).</div><div>Preparação: caso CT-1.1.1-01 executado antes, com o e-mail produtor.teste01@valence.dev cadastrado; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: dados válidos com e-mail já existente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 409 com a mensagem \"E-mail já cadastrado.\"; conta original preservada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: segunda conta criada com o mesmo e-mail ou código diferente de 409.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar login do agrônomo de seed e acesso à fila de análise",
+    "descricaoHtml": "<div>Identificador: CT-1.1.3-01</div><div>Objetivo: verificar que o usuário AGRONOMO criado pela carga inicial existe e acessa a fila de análise.</div><div>PBI e critério de aceite: [Cadastro de usuário] Seed - Disponibilizar usuários agrônomo e gestor; critério \"a carga inicial cria pelo menos 1 usuário AGRONOMO, que entra e acessa a fila de análise\".</div><div>Técnica: partição de equivalência por papel (AGRONOMO, classe válida).</div><div>Preparação: API Java publicada com a carga inicial executada; credenciais de teste do README do repositório valence-java.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: e-mail e senha do usuário agrônomo de seed. Valores em Parameter values.</div><div>Outputs esperados: login com papel AGRONOMO e fila de análise acessível.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: usuário de seed inexistente, papel diferente de AGRONOMO ou HTTP 403 na fila.</div><div>Notas: a senha não é registrada no caso de teste; usar a do README.</div>",
+    "parametros": {
+      "email": "agronomo do README do valence-java"
+    }
+  },
+  {
+    "titulo": "Validar login do gestor de seed e acesso à moderação",
+    "descricaoHtml": "<div>Identificador: CT-1.1.3-02</div><div>Objetivo: verificar que o usuário GESTOR criado pela carga inicial existe e acessa a moderação.</div><div>PBI e critério de aceite: [Cadastro de usuário] Seed - Disponibilizar usuários agrônomo e gestor; critério \"a carga inicial cria pelo menos 1 usuário GESTOR, que entra e acessa a moderação\".</div><div>Técnica: partição de equivalência por papel (GESTOR, classe válida).</div><div>Preparação: API Java publicada com a carga inicial executada; credenciais de teste do README do repositório valence-java.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: e-mail e senha do usuário gestor de seed. Valores em Parameter values.</div><div>Outputs esperados: login com papel GESTOR e fila de moderação acessível.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: usuário de seed inexistente, papel diferente de GESTOR ou HTTP 403 na moderação.</div><div>Notas: a senha não é registrada no caso de teste; usar a do README.</div>",
+    "parametros": {
+      "email": "gestor do README do valence-java"
+    }
+  },
+  {
+    "titulo": "Validar que o agrônomo de seed não cadastra propriedade",
+    "descricaoHtml": "<div>Identificador: CT-1.1.3-03</div><div>Objetivo: verificar que o papel AGRONOMO não executa funções exclusivas do produtor.</div><div>PBI e critério de aceite: [Cadastro de usuário] Seed - Disponibilizar usuários agrônomo e gestor; critério \"somente o papel PRODUTOR cadastra propriedade; outros papéis recebem HTTP 403\".</div><div>Técnica: teste de permissão por papel (AGRONOMO em rota de PRODUTOR).</div><div>Preparação: API Java online; credenciais do agrônomo de seed no README.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: token do AGRONOMO e corpo válido de propriedade. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 nas duas chamadas e nenhuma propriedade criada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: propriedade criada pelo agrônomo ou resposta diferente de 403.</div>",
+    "parametros": {
+      "corpo": "nome Sitio Teste; municipio Ribeirão Preto; uf SP; latitude -21.17; longitude -47.81; areaHectares 10; culturas MILHO"
+    }
+  },
+  {
+    "titulo": "Validar login de produtor com credenciais válidas",
+    "descricaoHtml": "<div>Identificador: CT-1.2.1-01</div><div>Objetivo: verificar o login do produtor com credenciais válidas e a permanência da sessão ao reabrir o app.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Entrar com e-mail e senha; critério \"após o login, o app abre a tela inicial do papel; ao reabrir com o token válido, o usuário continua conectado\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: e-mail e senha corretos de um produtor. Valores em Parameter values.</div><div>Outputs esperados: tela inicial do produtor aberta e sessão mantida ao reabrir o app.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: login recusado com credenciais válidas, tela de outro papel ou pedido de senha ao reabrir.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar resposta do login na API com token JWT",
+    "descricaoHtml": "<div>Identificador: CT-1.2.1-02</div><div>Objetivo: verificar o contrato da resposta do login e a validade do token.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Entrar com e-mail e senha; critério \"login com e-mail e senha corretos recebe HTTP 200 com token JWT, tipo Bearer, expiração e dados do usuário; o token vale 120 minutos\".</div><div>Técnica: partição de equivalência, classe válida, verificação de contrato da resposta.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger acessível.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: e-mail e senha corretos de um produtor. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 com token Bearer válido por 120 minutos e acesso a /api/usuarios/me.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: campo ausente na resposta, tipo diferente de Bearer, expiração diferente de 120 minutos ou token recusado.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar tela inicial conforme o papel do usuário",
+    "descricaoHtml": "<div>Identificador: CT-1.2.1-03</div><div>Objetivo: verificar que cada papel cai na sua tela inicial depois do login.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Entrar com e-mail e senha; critério \"após o login, o app abre a tela inicial do papel: produtor vê ocorrências e alertas, agrônomo vê a fila de análise e gestor vê a moderação\".</div><div>Técnica: tabela de decisão por papel (PRODUTOR, AGRONOMO e GESTOR).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; usuários de seed do README; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: credenciais de um produtor, de um agrônomo e de um gestor. Valores em Parameter values.</div><div>Outputs esperados: três telas iniciais diferentes, uma por papel.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: papel aberto na tela de outro papel ou função indisponível para o próprio papel.</div><div>Notas: senhas de seed só no README; não registrar no caso de teste.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev",
+      "agronomo": "agronomo do README",
+      "gestor": "gestor do README"
+    }
+  },
+  {
+    "titulo": "Validar login com senha errada",
+    "descricaoHtml": "<div>Identificador: CT-1.2.2-01</div><div>Objetivo: verificar a recusa de login com senha errada sem revelar qual campo está errado.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Mensagem de credenciais inválidas; critério \"senha errada para um e-mail existente recebe HTTP 401 com a mensagem \"E-mail ou senha inválidos.\"\".</div><div>Técnica: partição de equivalência, classe inválida (senha incorreta).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app e API online; Swagger acessível.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: e-mail existente com senha errada. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 com \"E-mail ou senha inválidos.\"; nenhum token devolvido; senha limpa na tela.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: login realizado, mensagem que indica qual campo está errado ou token devolvido.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "SenhaErrada@1"
+    }
+  },
+  {
+    "titulo": "Validar login com e-mail inexistente",
+    "descricaoHtml": "<div>Identificador: CT-1.2.2-02</div><div>Objetivo: verificar que e-mail inexistente recebe a mesma resposta da senha errada.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Mensagem de credenciais inválidas; critério \"e-mail inexistente recebe HTTP 401 com a mensagem \"E-mail ou senha inválidos.\"\".</div><div>Técnica: partição de equivalência, classe inválida (e-mail não cadastrado).</div><div>Preparação: e-mail do parâmetro @email não cadastrado; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: e-mail não cadastrado e qualquer senha. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 com a mesma mensagem da senha errada; nenhum token.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: mensagem diferente que revele que o e-mail não existe, ou token devolvido.</div>",
+    "parametros": {
+      "email": "nao.existe@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar login com e-mail e senha em branco",
+    "descricaoHtml": "<div>Identificador: CT-1.2.2-03</div><div>Objetivo: verificar a validação de campos obrigatórios no login.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Mensagem de credenciais inválidas; critério \"e-mail ou senha em branco recebe HTTP 400 com a lista de campos e mensagens em português\".</div><div>Técnica: partição de equivalência, classe inválida (campos vazios).</div><div>Preparação: app e API online; Swagger acessível.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: e-mail e senha vazios. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com os campos email e senha na lista de erros.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: login realizado, resposta 401 ou 500, ou erro sem a lista de campos.</div>",
+    "parametros": {
+      "corpo": "email e senha vazios"
+    }
+  },
+  {
+    "titulo": "Validar logout do usuário",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-01</div><div>Objetivo: verificar que o logout apaga a sessão do aparelho.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"o botão \"Sair\" apaga o token e os dados da sessão e volta para a tela de login; o botão voltar não reabre telas autenticadas\".</div><div>Técnica: transição de estado (conectado para desconectado).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: credenciais válidas de um produtor. Valores em Parameter values.</div><div>Outputs esperados: tela de login após sair, sem acesso às telas autenticadas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: tela autenticada acessível depois de sair ou usuário conectado ao reabrir o app.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar acesso a rota protegida sem token",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-02</div><div>Objetivo: verificar que rotas protegidas recusam requisições sem o cabeçalho Authorization.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"rota protegida sem o cabeçalho Authorization recebe HTTP 401\".</div><div>Técnica: partição de equivalência, classe inválida (sem credencial).</div><div>Preparação: API Java online; Swagger acessível; nenhum token informado em Authorize.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: requisições sem o cabeçalho Authorization. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 nas duas rotas, sem dados.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: resposta 200 com dados ou código diferente de 401.</div>",
+    "parametros": {
+      "rota": "/api/usuarios/me"
+    }
+  },
+  {
+    "titulo": "Validar acesso com token adulterado",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-03</div><div>Objetivo: verificar que a API recusa token com assinatura inválida.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"token com assinatura adulterada ou mal formado recebe HTTP 401\".</div><div>Técnica: partição de equivalência, classe inválida (assinatura alterada).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger acessível.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: token válido com o último caractere alterado. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 e nenhum dado do usuário.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: token adulterado aceito.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar acesso de produtor a rota exclusiva de agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-04</div><div>Objetivo: verificar que um token válido de papel sem permissão é recusado com 403.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"token válido de um papel sem permissão para a rota recebe HTTP 403\".</div><div>Técnica: teste de permissão por papel (PRODUTOR em rotas de AGRONOMO e GESTOR).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger acessível.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: token de PRODUTOR nas rotas da fila de análise e da moderação. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 nas duas rotas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: acesso liberado ou resposta 401 em vez de 403.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "rota": "/api/analises"
+    }
+  },
+  {
+    "titulo": "Validar sessão expirada no app",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-05</div><div>Objetivo: verificar o tratamento de token expirado no app.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"token expirado recebe HTTP 401; ao receber 401, o app apaga o token e leva ao login com \"Sua sessão expirou. Entre novamente.\"\".</div><div>Técnica: análise de valor limite (tempo de validade do token) e transição de estado.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; login feito há mais de 120 minutos.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: sessão com token emitido há mais de 120 minutos. Valores em Parameter values.</div><div>Outputs esperados: tela de login com a mensagem de sessão expirada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: dados exibidos com token expirado ou app travado sem voltar ao login.</div><div>Notas: para reduzir a espera, o JWT_EXPIRATION_MINUTES pode ser configurado com valor menor no ambiente de teste.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar endpoints públicos sem token",
+    "descricaoHtml": "<div>Identificador: CT-1.2.3-06</div><div>Objetivo: verificar que os endpoints públicos funcionam sem token.</div><div>PBI e critério de aceite: [Login e logout] Usuário - Sair e bloquear acesso sem token válido; critério \"os endpoints públicos (cadastro, login, health e Swagger) funcionam sem token\".</div><div>Técnica: partição de equivalência, classe válida (rotas públicas).</div><div>Preparação: API Java online.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: requisições sem o cabeçalho Authorization às rotas públicas. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 no health e Swagger acessível.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: rota pública pedindo token.</div>",
+    "parametros": {
+      "health": "/actuator/health"
+    }
+  },
+  {
+    "titulo": "Validar consulta do perfil do usuário logado",
+    "descricaoHtml": "<div>Identificador: CT-1.3.1-01</div><div>Objetivo: verificar a consulta do próprio perfil no app e na API.</div><div>PBI e critério de aceite: [Perfil e propriedades] Usuário - Consultar e editar meu perfil; critério \"tela de perfil mostra nome, e-mail, papel, telefone, município e UF do usuário logado\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: credenciais de um produtor cadastrado. Valores em Parameter values.</div><div>Outputs esperados: perfil completo no app e HTTP 200 com os mesmos dados na API.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: campo ausente, dado de outro usuário ou erro de permissão.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar edição do perfil com dados válidos",
+    "descricaoHtml": "<div>Identificador: CT-1.3.1-02</div><div>Objetivo: verificar a alteração de nome, telefone, município e UF do perfil.</div><div>PBI e critério de aceite: [Perfil e propriedades] Usuário - Consultar e editar meu perfil; critério \"edição permite alterar nome, telefone, município e UF e recebe HTTP 200 com os dados atualizados\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: novos valores válidos de nome, telefone, município e UF. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200, mensagem \"Perfil atualizado.\" e dados novos ao reabrir a tela.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: dados não gravados, mensagem ausente ou erro com dados válidos.</div><div>Notas: ao terminar, voltar o município para Ribeirão Preto, usado nos casos de alertas e mural.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "nome": "Produtor Teste Um Editado",
+      "telefone": "(16) 90000-0099",
+      "municipio": "Jardinópolis",
+      "uf": "SP"
+    }
+  },
+  {
+    "titulo": "Validar que e-mail e papel não podem ser alterados no perfil",
+    "descricaoHtml": "<div>Identificador: CT-1.3.1-03</div><div>Objetivo: verificar que e-mail e papel ficam protegidos contra alteração pelo próprio usuário.</div><div>PBI e critério de aceite: [Perfil e propriedades] Usuário - Consultar e editar meu perfil; critério \"e-mail e papel aparecem na tela, mas não podem ser editados\".</div><div>Técnica: partição de equivalência, classe inválida (campos não editáveis) e teste de permissão por papel.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger autorizado com o token do produtor.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: PUT com e-mail novo e papel GESTOR junto aos campos permitidos. Valores em Parameter values.</div><div>Outputs esperados: e-mail e papel inalterados após a atualização.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: e-mail ou papel alterados pelo próprio usuário.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "novoEmail": "outro.email@valence.dev",
+      "papel": "GESTOR"
+    }
+  },
+  {
+    "titulo": "Validar edição do perfil com nome em branco e UF inválida",
+    "descricaoHtml": "<div>Identificador: CT-1.3.1-04</div><div>Objetivo: verificar a validação dos campos obrigatórios na edição do perfil.</div><div>PBI e critério de aceite: [Perfil e propriedades] Usuário - Consultar e editar meu perfil; critério \"nome, município ou UF em branco, ou UF inválida, recebe HTTP 400 com a lista de campos e mensagens em português\".</div><div>Técnica: partição de equivalência, classe inválida (campo vazio e sigla inexistente).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: nome vazio e UF = ZZ. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com os campos nome e uf; perfil inalterado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: perfil salvo com nome vazio ou UF inválida.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "uf": "ZZ"
+    }
+  },
+  {
+    "titulo": "Validar cadastro de propriedade com dados válidos",
+    "descricaoHtml": "<div>Identificador: CT-1.3.2-01</div><div>Objetivo: verificar o cadastro de propriedade com localização e cultura.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Cadastrar propriedade com localização e culturas; critério \"cadastro com sucesso recebe HTTP 201 e a propriedade passa a aparecer na lista e no registro de ocorrência\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: nome, município, UF, coordenadas, área e uma cultura válidos. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201, propriedade na lista e disponível no registro de ocorrência.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: cadastro recusado com dados válidos ou propriedade ausente da lista.</div><div>Notas: esta propriedade é usada nos casos de ocorrência e de alertas.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "nome": "Sítio Boa Vista",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP",
+      "latitude": "-21.1775",
+      "longitude": "-47.8103",
+      "area": "12.5",
+      "cultura": "MILHO"
+    }
+  },
+  {
+    "titulo": "Validar cadastro de propriedade nos valores limite de coordenadas e área",
+    "descricaoHtml": "<div>Identificador: CT-1.3.2-02</div><div>Objetivo: verificar que os limites válidos de latitude, longitude e área são aceitos.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Cadastrar propriedade com localização e culturas; critério \"latitude entre -90 e 90, longitude entre -180 e 180 e área maior que zero\".</div><div>Técnica: análise de valor limite (limites válidos).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger autorizado com o token do produtor.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: latitude -90, longitude 180 e área 0,01. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201 e valores gravados sem arredondamento.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: valor limite válido recusado.</div><div>Notas: excluir esta propriedade depois do teste para não gerar alertas indevidos.</div>",
+    "parametros": {
+      "nome": "Área Limite",
+      "municipio": "Ribeirão Preto",
+      "uf": "SP",
+      "latitude": "-90",
+      "longitude": "180",
+      "area": "0.01",
+      "cultura": "TOMATE"
+    }
+  },
+  {
+    "titulo": "Validar cadastro de propriedade sem cultura",
+    "descricaoHtml": "<div>Identificador: CT-1.3.2-03</div><div>Objetivo: verificar a obrigatoriedade de ao menos uma cultura.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Cadastrar propriedade com localização e culturas; critério \"todos os campos são obrigatórios e pelo menos 1 cultura deve ser marcada\".</div><div>Técnica: partição de equivalência, classe inválida (lista vazia).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; app Valence instalado; API Java online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: propriedade válida sem nenhuma cultura. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com a mensagem do campo culturas; nada gravado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: propriedade salva sem cultura.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar cadastro de propriedade com coordenadas e área fora da faixa",
+    "descricaoHtml": "<div>Identificador: CT-1.3.2-04</div><div>Objetivo: verificar a recusa de valores logo fora dos limites de coordenadas e área.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Cadastrar propriedade com localização e culturas; critério \"valor fora da faixa recebe HTTP 400 com a mensagem do campo\".</div><div>Técnica: análise de valor limite (logo além dos limites).</div><div>Preparação: produtor do caso CT-1.1.1-01 cadastrado; API Java online; Swagger autorizado com o token do produtor.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: latitude 90,1, longitude -180,1 e área 0, um de cada vez. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 em cada envio, com o campo correto, e nada gravado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: valor fora da faixa aceito ou mensagem no campo errado.</div>",
+    "parametros": {
+      "latitude": "90.1",
+      "longitude": "-180.1",
+      "area": "0"
+    }
+  },
+  {
+    "titulo": "Validar que o gestor não cadastra propriedade",
+    "descricaoHtml": "<div>Identificador: CT-1.3.2-05</div><div>Objetivo: verificar que somente o papel PRODUTOR cadastra propriedade.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Cadastrar propriedade com localização e culturas; critério \"somente o papel PRODUTOR cadastra propriedade; AGRONOMO e GESTOR recebem HTTP 403\".</div><div>Técnica: teste de permissão por papel (GESTOR em rota de PRODUTOR).</div><div>Preparação: API Java online; credenciais do gestor de seed no README.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: token de GESTOR e corpo válido de propriedade. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 nas duas chamadas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: propriedade criada pelo gestor.</div>",
+    "parametros": {
+      "gestor": "gestor do README"
+    }
+  },
+  {
+    "titulo": "Validar lista paginada somente com as propriedades do produtor",
+    "descricaoHtml": "<div>Identificador: CT-1.3.3-01</div><div>Objetivo: verificar a listagem paginada e o isolamento entre produtores.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Listar, editar e excluir minhas propriedades; critério \"lista paginada (10 por página) mostra somente as propriedades do produtor logado\".</div><div>Técnica: partição de equivalência por dono do dado.</div><div>Preparação: dois produtores cadastrados (CT-1.1.1-01 e CT-1.1.1-02), cada um com pelo menos 1 propriedade; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: token do primeiro produtor. Valores em Parameter values.</div><div>Outputs esperados: lista paginada só com as propriedades dele.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: propriedade de outro produtor na lista ou paginação ausente.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "outro": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar edição de propriedade",
+    "descricaoHtml": "<div>Identificador: CT-1.3.3-02</div><div>Objetivo: verificar a edição de propriedade com as mesmas regras do cadastro.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Listar, editar e excluir minhas propriedades; critério \"edição aceita as mesmas regras do cadastro e recebe HTTP 200 com os dados atualizados\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: propriedade do caso CT-1.3.2-01 cadastrada; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: nova área e uma segunda cultura. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 e dados atualizados no detalhe.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alteração não gravada ou cultura perdida.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Sítio Boa Vista",
+      "area": "15",
+      "cultura": "TOMATE"
+    }
+  },
+  {
+    "titulo": "Validar exclusão de propriedade sem ocorrências",
+    "descricaoHtml": "<div>Identificador: CT-1.3.3-03</div><div>Objetivo: verificar a exclusão de propriedade que não tem ocorrências.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Listar, editar e excluir minhas propriedades; critério \"exclusão de propriedade sem ocorrências recebe HTTP 204 e a propriedade some da lista\".</div><div>Técnica: partição de equivalência, classe válida (sem dependências).</div><div>Preparação: propriedade do caso CT-1.3.2-02 cadastrada e sem ocorrências; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: propriedade sem ocorrências. Valores em Parameter values.</div><div>Outputs esperados: confirmação exibida, HTTP 204 e propriedade fora da lista.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: exclusão sem confirmação ou propriedade ainda na lista.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Área Limite"
+    }
+  },
+  {
+    "titulo": "Validar exclusão de propriedade com ocorrências",
+    "descricaoHtml": "<div>Identificador: CT-1.3.3-04</div><div>Objetivo: verificar o bloqueio da exclusão de propriedade com ocorrências.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Listar, editar e excluir minhas propriedades; critério \"propriedade com ocorrências registradas recebe HTTP 409 e não é excluída\".</div><div>Técnica: partição de equivalência, classe inválida (com dependências).</div><div>Preparação: propriedade do caso CT-1.3.2-01 com pelo menos 1 ocorrência registrada (CT-2.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: propriedade com ocorrências. Valores em Parameter values.</div><div>Outputs esperados: HTTP 409 e propriedade mantida.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: propriedade excluída ou ocorrências perdidas.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Sítio Boa Vista"
+    }
+  },
+  {
+    "titulo": "Validar acesso a propriedade de outro produtor",
+    "descricaoHtml": "<div>Identificador: CT-1.3.3-05</div><div>Objetivo: verificar o isolamento das propriedades entre produtores.</div><div>PBI e critério de aceite: [Perfil e propriedades] Produtor - Listar, editar e excluir minhas propriedades; critério \"propriedade de outro produtor ou inexistente recebe HTTP 404 ao consultar, editar ou excluir\".</div><div>Técnica: partição de equivalência por dono do dado (acesso cruzado).</div><div>Preparação: dois produtores cadastrados (CT-1.1.1-01 e CT-1.1.1-02); o primeiro com propriedade; API online; Swagger.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: token do segundo produtor e id da propriedade do primeiro. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 em GET, PUT e DELETE; dados preservados.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: dados de outro produtor exibidos, alterados ou excluídos.</div>",
+    "parametros": {
+      "dono": "produtor.teste01@valence.dev",
+      "outro": "produtor.teste04@valence.dev"
+    }
+  }
+]

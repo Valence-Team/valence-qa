@@ -1,0 +1,219 @@
+[
+  {
+    "titulo": "Validar fila de análise ordenada por severidade e data",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-01</div><div>Objetivo: verificar a ordem e os dados da fila de análise.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"ordem da maior para a menor severidade; em caso de empate, a mais antiga primeiro; cada item mostra cultura, severidade, praga provável, status, propriedade, município, UF e data de registro\".</div><div>Técnica: partição de equivalência e tabela de decisão (severidade e data de registro).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Pelo menos 3 ocorrências na fila: uma de severidade 4 e duas de severidade 3, registradas em horários diferentes.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: fila com severidades diferentes e um empate. Valores em Parameter values.</div><div>Outputs esperados: fila ordenada por severidade e, no empate, pela data mais antiga.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: ordem errada ou campo ausente no item.</div>",
+    "parametros": {
+      "agronomo": "agrônomo do README",
+      "severidade": "3"
+    }
+  },
+  {
+    "titulo": "Validar filtro por status e paginação da fila",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-02</div><div>Objetivo: verificar o filtro de status e a paginação.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"fila paginada (10 por página), com filtro opcional por status (TRIADA ou EM_ANALISE)\".</div><div>Técnica: partição de equivalência (um valor de cada status).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrências TRIADA e EM_ANALISE na fila.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: filtros TRIADA e EM_ANALISE. Valores em Parameter values.</div><div>Outputs esperados: listas filtradas e paginadas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: item de outro status na lista filtrada ou mais de 10 itens na página.</div>",
+    "parametros": {
+      "status1": "TRIADA",
+      "status2": "EM_ANALISE"
+    }
+  },
+  {
+    "titulo": "Validar que a fila não mostra ocorrências fora de análise",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-03</div><div>Objetivo: verificar que a fila só tem casos aguardando análise.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"a fila mostra somente ocorrências com status TRIADA e EM_ANALISE\".</div><div>Técnica: partição de equivalência, classes inválidas (RECEBIDA, CONFIRMADA e DESCARTADA).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrências CONFIRMADA e DESCARTADA existentes; agendador de triagem desligado ou passo 2 feito antes de 10 minutos.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: ocorrências RECEBIDA, CONFIRMADA e DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: nenhuma delas na fila.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: ocorrência de outro status na fila.</div>",
+    "parametros": {
+      "status1": "RECEBIDA",
+      "status2": "CONFIRMADA"
+    }
+  },
+  {
+    "titulo": "Validar acesso à fila por produtor, gestor e sem token",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-04</div><div>Objetivo: verificar que só o agrônomo acessa a fila.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"somente o papel AGRONOMO acessa a fila; PRODUTOR e GESTOR recebem HTTP 403 e requisição sem token recebe HTTP 401\".</div><div>Técnica: tabela de decisão por papel e autenticação.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: acesso como produtor, gestor e sem token. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403, 403 e 401.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: fila devolvida para outro papel ou sem token.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev",
+      "gestor": "gestor do README"
+    }
+  },
+  {
+    "titulo": "Validar ordenação da fila por campo inexistente",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-05</div><div>Objetivo: verificar a validação do parâmetro de ordenação.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"ordenação por campo inexistente recebe HTTP 400\".</div><div>Técnica: partição de equivalência, classe inválida.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: sort com campo que não existe. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500.</div>",
+    "parametros": {
+      "campo": "campoInexistente"
+    }
+  },
+  {
+    "titulo": "Validar saída da fila após laudo final e permanência após mais informações",
+    "descricaoHtml": "<div>Identificador: CT-5.1.1-06</div><div>Objetivo: verificar o efeito de cada laudo na fila.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Ver fila de casos por severidade; critério \"ocorrência com laudo CONFIRMADA ou DESCARTADA sai da fila; com laudo MAIS_INFORMACOES continua na fila\".</div><div>Técnica: tabela de decisão por tipo de laudo.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Pelo menos 3 ocorrências na fila.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: três laudos com decisões diferentes. Valores em Parameter values.</div><div>Outputs esperados: fila sem as decididas e com a de mais informações.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: ocorrência decidida na fila ou ocorrência com mais informações fora dela.</div>",
+    "parametros": {
+      "decisao1": "CONFIRMADA",
+      "decisao2": "MAIS_INFORMACOES"
+    }
+  },
+  {
+    "titulo": "Validar detalhe da ocorrência com triagem completa para o agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-5.1.2-01</div><div>Objetivo: verificar o detalhe completo da ocorrência para análise.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Consultar detalhe da ocorrência com triagem; critério \"detalhe mostra fotos, descrição, cultura, propriedade, município, UF, status e data de registro e a triagem completa; o detalhe tem o botão Emitir laudo, visível somente ao papel AGRONOMO\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA com foto (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: detalhe aberto pelo agrônomo. Valores em Parameter values.</div><div>Outputs esperados: todos os dados, a triagem e o botão Emitir laudo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: dado ou parte da triagem ausente, ou botão ausente.</div>",
+    "parametros": {
+      "agronomo": "agrônomo do README"
+    }
+  },
+  {
+    "titulo": "Validar motivo da recusa da foto no detalhe para o agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-5.1.2-02</div><div>Objetivo: verificar que o agrônomo vê por que a foto foi recusada.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Consultar detalhe da ocorrência com triagem; critério \"detalhe mostra o motivo da recusa da foto, quando houver\".</div><div>Técnica: partição de equivalência (triagem só com motivo).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência do caso CT-3.2.1-03 em EM_ANALISE.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: ocorrência com foto recusada. Valores em Parameter values.</div><div>Outputs esperados: motivo da recusa no detalhe.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: motivo ausente ou tela de erro.</div>",
+    "parametros": {
+      "agronomo": "agrônomo do README",
+      "motivo": "foto tremida"
+    }
+  },
+  {
+    "titulo": "Validar laudos anteriores no detalhe da ocorrência",
+    "descricaoHtml": "<div>Identificador: CT-5.1.2-03</div><div>Objetivo: verificar o histórico de laudos no detalhe.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Consultar detalhe da ocorrência com triagem; critério \"detalhe mostra os laudos anteriores da ocorrência, quando houver\".</div><div>Técnica: partição de equivalência (ocorrência com laudo anterior).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: ocorrência com um laudo MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: laudo anterior no detalhe.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo anterior ausente.</div>",
+    "parametros": {
+      "decisao": "MAIS_INFORMACOES"
+    }
+  },
+  {
+    "titulo": "Validar ocorrência e foto inexistentes no detalhe",
+    "descricaoHtml": "<div>Identificador: CT-5.1.2-04</div><div>Objetivo: verificar o tratamento de ids inexistentes.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Consultar detalhe da ocorrência com triagem; critério \"ocorrência inexistente recebe HTTP 404; foto de ocorrência inexistente recebe HTTP 404\".</div><div>Técnica: partição de equivalência, classe inválida (id inexistente).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: id de ocorrência inexistente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 nas duas chamadas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500.</div>",
+    "parametros": {
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar carregamento das fotos com o token do agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-5.1.2-05</div><div>Objetivo: verificar o acesso do agrônomo às fotos.</div><div>PBI e critério de aceite: [Fila de análise] Agrônomo - Consultar detalhe da ocorrência com triagem; critério \"as fotos carregam com o token do agrônomo\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência com foto na fila.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: ocorrência com foto. Valores em Parameter values.</div><div>Outputs esperados: foto exibida para o agrônomo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foto sem carregar ou HTTP 403.</div>",
+    "parametros": {
+      "agronomo": "agrônomo do README"
+    }
+  },
+  {
+    "titulo": "Validar laudo confirmado com post no mural do município",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-01</div><div>Objetivo: verificar o laudo CONFIRMADA e seus efeitos.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"laudo emitido com sucesso recebe HTTP 201 e registra o agrônomo responsável e a data; laudo CONFIRMADA muda a ocorrência para CONFIRMADA, atualiza os alertas e cria no mural do município um post do caso confirmado, assinado pelo agrônomo\".</div><div>Técnica: transição de estado (TRIADA para CONFIRMADA).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA na fila.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: laudo CONFIRMADA com praga e parecer válidos. Valores em Parameter values.</div><div>Outputs esperados: ocorrência CONFIRMADA, laudo registrado e post no mural.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: status diferente, laudo sem agrônomo ou data, ou post ausente.</div>",
+    "parametros": {
+      "praga": "Ferrugem-comum",
+      "parecer": "Pústulas típicas de ferrugem-comum na foto e na descrição."
+    }
+  },
+  {
+    "titulo": "Validar laudo descartado com encerramento dos alertas",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-02</div><div>Objetivo: verificar o laudo DESCARTADA e seus efeitos.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"laudo DESCARTADA muda a ocorrência para DESCARTADA e encerra os alertas\".</div><div>Técnica: transição de estado (TRIADA para DESCARTADA).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA com alerta SUSPEITA para o vizinho.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: ocorrência DESCARTADA e alertas ENCERRADO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: status diferente ou alerta ainda SUSPEITA.</div>",
+    "parametros": {
+      "decisao": "DESCARTADA",
+      "parecer": "Manchas de deficiência nutricional, sem praga ou doença."
+    }
+  },
+  {
+    "titulo": "Validar parecer com 20 e com 2000 caracteres",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-03</div><div>Objetivo: verificar os limites válidos do parecer.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"parecer de 20 a 2000 caracteres\".</div><div>Técnica: análise de valor limite (20 e 2000).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Duas ocorrências TRIADA; texto de 2000 caracteres preparado num editor.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: pareceres com 20 e 2000 caracteres. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 400 em valor válido.</div>",
+    "parametros": {
+      "parecer20": "Ferrugem confirmada.",
+      "tamanho": "2000"
+    }
+  },
+  {
+    "titulo": "Validar parecer ausente, com 19 e com 2001 caracteres",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-04</div><div>Objetivo: verificar a validação do parecer.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"parecer ausente ou fora do limite recebe HTTP 400 com a lista de campos\".</div><div>Técnica: análise de valor limite (19 e 2001) e partição de equivalência (ausente).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA; texto de 2001 caracteres preparado.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: parecer ausente, com 19 e com 2001 caracteres. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 e ocorrência sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado com parecer inválido.</div>",
+    "parametros": {
+      "parecer19": "Ferrugem confirmada",
+      "tamanho": "2001"
+    }
+  },
+  {
+    "titulo": "Validar laudo confirmado sem praga confirmada",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-05</div><div>Objetivo: verificar a obrigatoriedade da praga na confirmação.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"decisão CONFIRMADA sem praga confirmada recebe HTTP 400\".</div><div>Técnica: tabela de decisão (CONFIRMADA sem praga).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo CONFIRMADA sem praga. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado sem praga.</div>",
+    "parametros": {
+      "parecer": "Sintomas compatíveis com doença fúngica nas folhas."
+    }
+  },
+  {
+    "titulo": "Validar laudo em ocorrência já decidida e inexistente",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-06</div><div>Objetivo: verificar que a decisão final não é sobrescrita.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"ocorrência já CONFIRMADA ou DESCARTADA recebe HTTP 422; ocorrência inexistente recebe HTTP 404\".</div><div>Técnica: transição de estado inválida e partição de equivalência (id inexistente).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrências CONFIRMADA e DESCARTADA.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudos em ocorrências decididas e inexistente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 422, 422 e 404.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo final substituído.</div>",
+    "parametros": {
+      "status": "CONFIRMADA",
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar post do caso confirmado sem dados do produtor",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-07</div><div>Objetivo: verificar a privacidade do produtor no post público.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"post do caso confirmado assinado pelo agrônomo e sem dados do produtor\".</div><div>Técnica: partição de equivalência, classe inválida (dado pessoal no post).</div><div>Preparação: caso CT-5.2.1-01 executado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: post criado pelo laudo CONFIRMADA. Valores em Parameter values.</div><div>Outputs esperados: post sem dados do produtor.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: qualquer dado de Parameter values no post.</div>",
+    "parametros": {
+      "dados": "nome do produtor, produtor.teste01@valence.dev, Sítio Boa Vista, -21.1775, -47.8103"
+    }
+  },
+  {
+    "titulo": "Validar evento de laudo no Observatório sem dados pessoais",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-08</div><div>Objetivo: verificar que as duas decisões chegam ao Observatório.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"as duas decisões emitem o evento laudo.emitido, sem dados pessoais, para o Observatório\".</div><div>Técnica: tabela de decisão (CONFIRMADA e DESCARTADA).</div><div>Preparação: casos CT-5.2.1-01 e CT-5.2.1-02 executados; Observatório consumindo a fila.</div><div>Ambiente: API Java no Azure App Service, Swagger da API Java, Swagger do Observatório .NET no Azure e app Valence no Android.</div><div>Inputs: laudos CONFIRMADA e DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: focos atualizados sem dados pessoais.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco sem atualização ou com dado pessoal.</div>",
+    "parametros": {
+      "municipio": "Ribeirão Preto"
+    }
+  },
+  {
+    "titulo": "Validar que o produtor vê o laudo sem o e-mail do agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-5.2.1-09</div><div>Objetivo: verificar a privacidade do agrônomo no laudo.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Confirmar ou descartar ocorrência; critério \"o produtor vê no detalhe a decisão, a praga confirmada, o parecer, a data e o nome do agrônomo, sem o e-mail dele\".</div><div>Técnica: partição de equivalência, classe inválida (e-mail no laudo).</div><div>Preparação: caso CT-5.2.1-01 executado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: detalhe da ocorrência confirmada visto pelo produtor. Valores em Parameter values.</div><div>Outputs esperados: laudo sem o e-mail do agrônomo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: e-mail do agrônomo exibido.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar pedido de mais informações sem praga confirmada",
+    "descricaoHtml": "<div>Identificador: CT-5.2.2-01</div><div>Objetivo: verificar o pedido de mais informações.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Pedir mais informações ao produtor; critério \"o formulário aceita MAIS_INFORMACOES com parecer de 20 a 2000 caracteres; a praga confirmada não é obrigatória; laudo MAIS_INFORMACOES recebe HTTP 201 e deixa a ocorrência em EM_ANALISE; a ocorrência continua na fila e os alertas continuam como SUSPEITA\".</div><div>Técnica: tabela de decisão (MAIS_INFORMACOES sem praga).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA com alerta SUSPEITA para o vizinho.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: laudo MAIS_INFORMACOES sem praga. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE, na fila e alertas SUSPEITA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 400 pela falta de praga, saída da fila ou alerta alterado.</div>",
+    "parametros": {
+      "decisao": "MAIS_INFORMACOES",
+      "parecer": "Envie uma foto mais próxima da folha, com luz do dia."
+    }
+  },
+  {
+    "titulo": "Validar que o produtor vê o parecer e envia nova foto",
+    "descricaoHtml": "<div>Identificador: CT-5.2.2-02</div><div>Objetivo: verificar que o produtor responde ao pedido de mais informações.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Pedir mais informações ao produtor; critério \"o produtor vê o parecer no detalhe da ocorrência e pode enviar nova foto e refazer a triagem\".</div><div>Técnica: transição de estado (EM_ANALISE com nova foto).</div><div>Preparação: caso CT-5.2.2-01 executado; ambiente da triagem com foto.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: nova foto e novo pedido de triagem. Valores em Parameter values.</div><div>Outputs esperados: parecer visível, foto aceita e triagem refeita.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: parecer ausente ou envio de foto bloqueado.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev",
+      "foto": "milho-folha-ferrugem.jpg"
+    }
+  },
+  {
+    "titulo": "Validar que mais informações não muda o status do foco no Observatório",
+    "descricaoHtml": "<div>Identificador: CT-5.2.2-03</div><div>Objetivo: verificar que o evento de mais informações não altera o foco.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Pedir mais informações ao produtor; critério \"o evento laudo.emitido é emitido com a decisão MAIS_INFORMACOES, e o Observatório não muda o status do foco\".</div><div>Técnica: tabela de decisão por tipo de laudo.</div><div>Preparação: ocorrência TRIADA com foco no Observatório; Observatório consumindo a fila.</div><div>Ambiente: API Java no Azure App Service, Swagger da API Java, Swagger do Observatório .NET no Azure e app Valence no Android.</div><div>Inputs: laudo MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: foco com o mesmo status.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: status do foco alterado.</div>",
+    "parametros": {
+      "municipio": "Ribeirão Preto"
+    }
+  },
+  {
+    "titulo": "Validar novo laudo final depois de mais informações",
+    "descricaoHtml": "<div>Identificador: CT-5.2.2-04</div><div>Objetivo: verificar que a análise continua depois do pedido.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Pedir mais informações ao produtor; critério \"depois de um laudo MAIS_INFORMACOES, o agrônomo pode emitir um novo laudo CONFIRMADA ou DESCARTADA\".</div><div>Técnica: transição de estado (EM_ANALISE para CONFIRMADA).</div><div>Preparação: caso CT-5.2.2-01 executado.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo CONFIRMADA após MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201 e status CONFIRMADA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 422 ou status sem mudança.</div>",
+    "parametros": {
+      "decisao": "CONFIRMADA"
+    }
+  },
+  {
+    "titulo": "Validar pedido de mais informações com parecer curto",
+    "descricaoHtml": "<div>Identificador: CT-5.2.2-05</div><div>Objetivo: verificar o limite do parecer no pedido de mais informações.</div><div>PBI e critério de aceite: [Emissão de laudo] Agrônomo - Pedir mais informações ao produtor; critério \"MAIS_INFORMACOES com parecer de 20 a 2000 caracteres\".</div><div>Técnica: análise de valor limite (19 caracteres).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: parecer com 19 caracteres. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado com parecer curto.</div>",
+    "parametros": {
+      "parecer19": "Mande outra foto ok"
+    }
+  },
+  {
+    "titulo": "Validar emissão de laudo pelo produtor na própria ocorrência",
+    "descricaoHtml": "<div>Identificador: CT-5.2.3-01</div><div>Objetivo: verificar que o produtor não emite laudo.</div><div>PBI e critério de aceite: [Emissão de laudo] Produtor ou gestor - Bloquear emissão de laudo sem permissão; critério \"PRODUTOR que tenta emitir laudo recebe HTTP 403, inclusive na própria ocorrência; nenhum laudo é gravado e o status não muda\".</div><div>Técnica: tabela de decisão por papel.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA do produtor.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo enviado pelo dono da ocorrência. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 e ocorrência sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado pelo produtor.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar emissão de laudo pelo gestor",
+    "descricaoHtml": "<div>Identificador: CT-5.2.3-02</div><div>Objetivo: verificar que o gestor não emite laudo.</div><div>PBI e critério de aceite: [Emissão de laudo] Produtor ou gestor - Bloquear emissão de laudo sem permissão; critério \"GESTOR que tenta emitir laudo recebe HTTP 403; nenhum laudo é gravado e o status não muda\".</div><div>Técnica: tabela de decisão por papel.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Ocorrência TRIADA.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo enviado pelo gestor. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado pelo gestor.</div>",
+    "parametros": {
+      "gestor": "gestor do README"
+    }
+  },
+  {
+    "titulo": "Validar emissão de laudo sem token e com token expirado",
+    "descricaoHtml": "<div>Identificador: CT-5.2.3-03</div><div>Objetivo: verificar a autenticação na emissão de laudo.</div><div>PBI e critério de aceite: [Emissão de laudo] Produtor ou gestor - Bloquear emissão de laudo sem permissão; critério \"requisição sem token ou com token expirado recebe HTTP 401; nenhum laudo é gravado e o status não muda\".</div><div>Técnica: partição de equivalência (sem token e token expirado).</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo. Token do agrônomo guardado há mais de 120 minutos, ou API local com JWT_EXPIRATION_MINUTES=1.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: envio sem token e com token expirado. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: laudo gravado sem autenticação válida.</div>",
+    "parametros": {
+      "token": "token do agrônomo emitido há mais de 120 minutos"
+    }
+  },
+  {
+    "titulo": "Validar ausência do botão Emitir laudo para produtor e gestor",
+    "descricaoHtml": "<div>Identificador: CT-5.2.3-04</div><div>Objetivo: verificar que o app esconde a emissão de laudo de quem não tem permissão.</div><div>PBI e critério de aceite: [Emissão de laudo] Produtor ou gestor - Bloquear emissão de laudo sem permissão; critério \"o botão Emitir laudo não aparece no app para PRODUTOR e GESTOR\".</div><div>Técnica: tabela de decisão por papel.</div><div>Preparação: produtor.teste01@valence.dev com o Sítio Boa Vista (Ribeirão Preto/SP); agrônomo e gestor de seed do README; Swagger autorizado com o token indicado em cada passo.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: detalhe aberto por produtor e gestor. Valores em Parameter values.</div><div>Outputs esperados: botão ausente nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: botão visível para produtor ou gestor.</div>",
+    "parametros": {
+      "produtor": "produtor.teste01@valence.dev",
+      "gestor": "gestor do README"
+    }
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "titulo": "Validar alerta de suspeita para propriedade vizinha com a mesma cultura",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-01</div><div>Objetivo: verificar que o evento ocorrencia.triada gera alerta SUSPEITA para a propriedade vizinha com a mesma cultura.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"o evento ocorrencia.triada gera alerta de nível SUSPEITA para cada propriedade com a mesma cultura num raio de até 10 km; alerta mostra cultura, praga provável, severidade, distância aproximada em km inteiros, texto de alerta, data e o nome da propriedade do próprio usuário que recebeu\".</div><div>Técnica: partição de equivalência, classe válida (mesma cultura dentro do raio).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: ocorrência de MILHO triada a 5 km da Fazenda Vizinha. Valores em Parameter values.</div><div>Outputs esperados: alerta SUSPEITA com todos os campos para a Fazenda Vizinha.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta ausente, nível diferente de SUSPEITA ou campo faltando.</div><div>Notas: distâncias calculadas pela fórmula de Haversine com raio da Terra de 6371 km; se a API usar outra fórmula, recalcular as latitudes com o Henrique.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "senha": "Senha@2026",
+      "distancia": "5 km",
+      "propriedade": "Fazenda Vizinha"
+    }
+  },
+  {
+    "titulo": "Validar alerta para propriedade a exatamente 10 km",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-02</div><div>Objetivo: verificar que o limite do raio é inclusivo.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"propriedade a exatamente 10 km recebe o alerta\".</div><div>Técnica: análise de valor limite (distância igual ao raio).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: propriedade de MILHO a 10 km da ocorrência. Valores em Parameter values.</div><div>Outputs esperados: alerta SUSPEITA para a Chácara Limite.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: Chácara Limite sem alerta.</div><div>Notas: distâncias calculadas pela fórmula de Haversine com raio da Terra de 6371 km; se a API usar outra fórmula, recalcular as latitudes com o Henrique.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Chácara Limite",
+      "distancia": "10 km"
+    }
+  },
+  {
+    "titulo": "Validar ausência de alerta para propriedade a mais de 10 km",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-03</div><div>Objetivo: verificar que propriedade fora do raio não recebe alerta.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"propriedade a mais de 10 km não recebe o alerta\".</div><div>Técnica: análise de valor limite (10,1 km, logo acima do raio).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: propriedade de MILHO a 10,1 km da ocorrência. Valores em Parameter values.</div><div>Outputs esperados: nenhum alerta para o Sítio Além.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta criado para o Sítio Além.</div><div>Notas: distâncias calculadas pela fórmula de Haversine com raio da Terra de 6371 km; se a API usar outra fórmula, recalcular as latitudes com o Henrique.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Sítio Além"
+    }
+  },
+  {
+    "titulo": "Validar ausência de alerta para propriedade sem a cultura da ocorrência",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-04</div><div>Objetivo: verificar que só propriedades com a mesma cultura recebem o alerta.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"propriedade sem a cultura da ocorrência não recebe o alerta, mesmo dentro do raio\".</div><div>Técnica: tabela de decisão (dentro do raio e cultura diferente).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: propriedade só de TOMATE a 3 km de uma ocorrência de MILHO. Valores em Parameter values.</div><div>Outputs esperados: nenhum alerta para a Horta Perto.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta criado para a Horta Perto.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "propriedade": "Horta Perto"
+    }
+  },
+  {
+    "titulo": "Validar que a propriedade de origem não recebe alerta",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-05</div><div>Objetivo: verificar que quem registrou não recebe alerta da própria ocorrência.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"a propriedade de origem da ocorrência não recebe alerta\".</div><div>Técnica: partição de equivalência, classe inválida (propriedade de origem).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: lista de alertas do produtor que registrou a ocorrência. Valores em Parameter values.</div><div>Outputs esperados: nenhum alerta da própria ocorrência.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta da ocorrência para o Sítio Boa Vista.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Sítio Boa Vista"
+    }
+  },
+  {
+    "titulo": "Validar ausência de alerta automático para ocorrência em análise",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-06</div><div>Objetivo: verificar que caso encaminhado ao agrônomo não dispara alerta.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"ocorrência que vai para EM_ANALISE não gera alerta automático\".</div><div>Técnica: partição de equivalência, classe inválida (ocorrência sem triagem confiável).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ambiente da triagem com foto (como no CT-3.2.1-03).</div><div>Ambiente: API Java local (porta 8080) ligada ao RabbitMQ do CloudAMQP, Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência que termina em EM_ANALISE. Valores em Parameter values.</div><div>Outputs esperados: nenhum alerta para a Fazenda Vizinha.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta criado para ocorrência em EM_ANALISE.</div>",
+    "parametros": {
+      "foto": "milho-borrada.jpg",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar distância mínima de 1 km no alerta",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-07</div><div>Objetivo: verificar o arredondamento da distância com mínimo de 1 km.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"distância aproximada em km inteiros, mínimo 1 km\".</div><div>Técnica: análise de valor limite (0,3 km, abaixo do mínimo exibido).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: propriedade de MILHO a 0,3 km da ocorrência. Valores em Parameter values.</div><div>Outputs esperados: distância de 1 km no alerta.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: distância 0 km, com casas decimais ou ausente.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "senha": "Senha@2026",
+      "propriedade": "Rancho Colado",
+      "distancia": "1 km"
+    }
+  },
+  {
+    "titulo": "Validar que o alerta não expõe dados do produtor de origem",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-08</div><div>Objetivo: verificar a privacidade do produtor que registrou a ocorrência.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"alerta nunca mostra coordenada exata, nome, e-mail, telefone ou propriedade do produtor de origem\".</div><div>Técnica: partição de equivalência, classe inválida (dado pessoal no alerta).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01).</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: alerta recebido pelo vizinho. Valores em Parameter values.</div><div>Outputs esperados: alerta sem dados do produtor de origem.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: qualquer dado de Parameter values no alerta.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "origem": "Sítio Boa Vista, produtor.teste01@valence.dev, -21.1775, -47.8103, nome do produtor de origem"
+    }
+  },
+  {
+    "titulo": "Validar evento repetido descartado sem duplicar alerta",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-09</div><div>Objetivo: verificar a idempotência do consumidor de alertas.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"no máximo 1 alerta por ocorrência e propriedade; evento repetido é descartado pelo eventoId\".</div><div>Técnica: partição de equivalência, classe inválida (mensagem duplicada).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01). Acesso ao painel do CloudAMQP; corpo do evento conforme a seção 8 do contrato.</div><div>Ambiente: API Java no Azure App Service, painel de gerenciamento do CloudAMQP (RabbitMQ), Swagger da API e app Valence no Android.</div><div>Inputs: mesma mensagem publicada duas vezes. Valores em Parameter values.</div><div>Outputs esperados: um alerta só por propriedade.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta duplicado para a mesma ocorrência e propriedade.</div><div>Notas: o corpo do evento não leva dados pessoais; usar municipio e uf da propriedade de origem.</div>",
+    "parametros": {
+      "eventoId": "3f6c1e2a-8b4d-4e9a-9c1f-2d7e5a6b8c91",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar raio dos alertas configurado por ALERTA_RAIO_KM",
+    "descricaoHtml": "<div>Identificador: CT-4.1.1-10</div><div>Objetivo: verificar que o raio vem da variável de ambiente.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor vizinho - Receber alerta de suspeita no raio; critério \"raio de até 10 km definido pela variável ALERTA_RAIO_KM\".</div><div>Técnica: partição de equivalência por configuração (raio menor que a distância do vizinho).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Permissão para reiniciar a API local alterando o .env; voltar ALERTA_RAIO_KM para 10 ao final.</div><div>Ambiente: API Java local (porta 8080) ligada ao RabbitMQ do CloudAMQP, Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: raio de 4 km e ocorrência triada. Valores em Parameter values.</div><div>Outputs esperados: alerta só para propriedades a até 4 km com MILHO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: Fazenda Vizinha alertada com raio de 4 km.</div>",
+    "parametros": {
+      "raio": "4",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar lista paginada de alertas do produtor logado",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-01</div><div>Objetivo: verificar a lista de alertas do produtor.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"lista paginada (10 por página), da mais recente para a mais antiga, somente com os alertas das propriedades do produtor logado; cada item mostra nível, cultura, praga provável, severidade, distância, propriedade que recebeu e data\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Casos CT-4.1.1-01, 02 e 07 executados.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: consulta da lista de alertas. Valores em Parameter values.</div><div>Outputs esperados: lista ordenada, paginada e só com alertas do produtor.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta de outro produtor na lista, ordem errada ou campo ausente.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "tamanho": "10"
+    }
+  },
+  {
+    "titulo": "Validar destaque e contador de alertas não lidos",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-02</div><div>Objetivo: verificar a indicação de alertas não lidos.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"alerta não lido aparece destacado e o app mostra a quantidade de alertas não lidos\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Vizinho com pelo menos 2 alertas não lidos.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: vizinho com alertas não lidos. Valores em Parameter values.</div><div>Outputs esperados: contador e destaque corretos.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: contador ausente ou diferente do número de alertas destacados.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar marcar alerta como lido",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-03</div><div>Objetivo: verificar a marcação de leitura.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"marcar como lido recebe HTTP 200 e o alerta deixa de ser destacado\".</div><div>Técnica: transição de estado (não lido para lido).</div><div>Preparação: caso CT-4.1.2-02 executado.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: abertura de alerta no app e PATCH no Swagger. Valores em Parameter values.</div><div>Outputs esperados: alertas marcados como lidos e contador atualizado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta continua destacado ou PATCH com código diferente de 200.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar marcar como lido alerta de outro produtor e inexistente",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-04</div><div>Objetivo: verificar que só o dono marca o alerta como lido.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"alerta de outro produtor ou inexistente recebe HTTP 404 ao marcar como lido\".</div><div>Técnica: partição de equivalência, classes inválidas (outro dono e id inexistente).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Alerta não lido do produtor.teste04.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: PATCH em alerta de outro produtor e em id inexistente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 nos dois casos e alerta do vizinho sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta de outro produtor marcado como lido.</div>",
+    "parametros": {
+      "apoio": "produtor.teste08@valence.dev",
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar consulta de alertas por agrônomo e gestor",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-05</div><div>Objetivo: verificar que só o produtor consulta alertas.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"somente o papel PRODUTOR consulta alertas; AGRONOMO e GESTOR recebem HTTP 403\".</div><div>Técnica: tabela de decisão por papel.</div><div>Preparação: usuários de seed do README; Swagger.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: consulta de alertas com papéis AGRONOMO e GESTOR. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 nos dois papéis.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: lista devolvida para agrônomo ou gestor.</div>",
+    "parametros": {
+      "agronomo": "agronomo do README",
+      "gestor": "gestor do README"
+    }
+  },
+  {
+    "titulo": "Validar mensagem de lista vazia de alertas",
+    "descricaoHtml": "<div>Identificador: CT-4.1.2-06</div><div>Objetivo: verificar a mensagem quando não há alertas.</div><div>PBI e critério de aceite: [Alertas de suspeita para vizinhos] Produtor - Listar alertas e marcar como lido; critério \"lista vazia mostra Nenhum alerta para as suas propriedades.\".</div><div>Técnica: partição de equivalência (lista vazia).</div><div>Preparação: e-mail produtor.teste09@valence.dev ainda não cadastrado; app e API online.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: produtor novo sem propriedades. Valores em Parameter values.</div><div>Outputs esperados: mensagem de lista vazia.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: tela em branco, erro ou mensagem diferente.</div>",
+    "parametros": {
+      "email": "produtor.teste09@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar alerta confirmado pelo laudo do agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-4.2.1-01</div><div>Objetivo: verificar a mudança do alerta para CONFIRMADO após o laudo.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta confirmado pelo laudo; critério \"laudo CONFIRMADA muda todos os alertas SUSPEITA da ocorrência para CONFIRMADO e mostra a praga confirmada; mudança para CONFIRMADO volta a marcar o alerta como não lido; o app mostra Confirmado pelo agrônomo; a propriedade de origem continua sem alerta\".</div><div>Técnica: transição de estado (SUSPEITA para CONFIRMADO).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Ocorrência de MILHO do produtor.teste01 no Sítio Boa Vista em TRIADA (fluxo do CT-3.1.1-01). Alerta SUSPEITA para a Fazenda Vizinha; agrônomo do README; Swagger autorizado com o token do agrônomo.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: laudo CONFIRMADA para ocorrência com alerta SUSPEITA. Valores em Parameter values.</div><div>Outputs esperados: alerta CONFIRMADO, não lido e com a praga confirmada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta continua SUSPEITA, fica como lido ou mostra outra praga.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "praga": "Ferrugem-comum",
+      "parecer": "Pústulas típicas de ferrugem-comum confirmadas pela foto e pela descrição."
+    }
+  },
+  {
+    "titulo": "Validar criação de alerta confirmado para propriedade sem alerta anterior",
+    "descricaoHtml": "<div>Identificador: CT-4.2.1-02</div><div>Objetivo: verificar que o laudo confirmado cria os alertas que faltam no raio.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta confirmado pelo laudo; critério \"laudo CONFIRMADA cria alertas CONFIRMADO para as propriedades com a mesma cultura no raio de 10 km que ainda não tinham alerta, inclusive quando a ocorrência não gerou alerta automático; a propriedade de origem continua sem alerta\".</div><div>Técnica: tabela de decisão (laudo CONFIRMADA e ocorrência sem alerta).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Caso CT-4.1.1-06 executado; agrônomo do README; Swagger autorizado com o token do agrônomo.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo CONFIRMADA para ocorrência em EM_ANALISE. Valores em Parameter values.</div><div>Outputs esperados: alerta CONFIRMADO criado para a Fazenda Vizinha.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: nenhum alerta criado ou alerta para a propriedade de origem.</div>",
+    "parametros": {
+      "praga": "Ferrugem-comum",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar que pedido de mais informações mantém o alerta como suspeita",
+    "descricaoHtml": "<div>Identificador: CT-4.2.1-03</div><div>Objetivo: verificar que o pedido de mais informações não confirma o alerta.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta confirmado pelo laudo; critério \"laudo MAIS_INFORMACOES mantém os alertas como SUSPEITA\".</div><div>Técnica: tabela de decisão por tipo de laudo.</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Nova ocorrência de MILHO do produtor.teste01 em TRIADA com alerta SUSPEITA; agrônomo do README; Swagger autorizado com o token do agrônomo.</div><div>Ambiente: Swagger da API Java no Azure App Service (/swagger-ui.html), navegador Chrome.</div><div>Inputs: laudo MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: alerta SUSPEITA sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta muda para CONFIRMADO ou ENCERRADO.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "decisao": "MAIS_INFORMACOES"
+    }
+  },
+  {
+    "titulo": "Validar que alerta confirmado não volta a suspeita",
+    "descricaoHtml": "<div>Identificador: CT-4.2.1-04</div><div>Objetivo: verificar que a confirmação do agrônomo não é desfeita.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta confirmado pelo laudo; critério \"alerta CONFIRMADO nunca volta a SUSPEITA\".</div><div>Técnica: transição de estado inválida (CONFIRMADO para SUSPEITA).</div><div>Preparação: caso CT-4.2.1-01 executado; acesso ao painel do CloudAMQP.</div><div>Ambiente: API Java no Azure App Service, painel de gerenciamento do CloudAMQP (RabbitMQ), Swagger da API e app Valence no Android.</div><div>Inputs: novo evento de triagem e pedido de reprocessamento depois do laudo. Valores em Parameter values.</div><div>Outputs esperados: alerta mantido como CONFIRMADO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta volta a SUSPEITA.</div>",
+    "parametros": {
+      "eventoId": "7a1d2e3f-4b5c-4d6e-8f70-91a2b3c4d5e6",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar alerta encerrado pelo laudo de descarte",
+    "descricaoHtml": "<div>Identificador: CT-4.2.2-01</div><div>Objetivo: verificar o encerramento do alerta quando o caso é descartado.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta encerrado por descarte; critério \"laudo DESCARTADA muda todos os alertas SUSPEITA da ocorrência para ENCERRADO; mudança para ENCERRADO volta a marcar o alerta como não lido; o app mostra Encerrado: caso descartado\".</div><div>Técnica: transição de estado (SUSPEITA para ENCERRADO).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Nova ocorrência de MILHO do produtor.teste01 em TRIADA com alerta SUSPEITA; agrônomo do README; Swagger autorizado com o token do agrônomo.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: laudo DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: alerta ENCERRADO e não lido.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta continua SUSPEITA ou fica como lido.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "parecer": "Manchas causadas por deficiência nutricional, sem sinal de praga ou doença."
+    }
+  },
+  {
+    "titulo": "Validar alerta encerrado pela exclusão da ocorrência pelo dono",
+    "descricaoHtml": "<div>Identificador: CT-4.2.2-02</div><div>Objetivo: verificar o encerramento do alerta quando o dono exclui a ocorrência.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta encerrado por descarte; critério \"exclusão da ocorrência pelo dono também muda os alertas SUSPEITA para ENCERRADO\".</div><div>Técnica: transição de estado (SUSPEITA para ENCERRADO por exclusão).</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Nova ocorrência de MILHO do produtor.teste01 em TRIADA com alerta SUSPEITA.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e API Java no Azure App Service.</div><div>Inputs: exclusão da ocorrência TRIADA. Valores em Parameter values.</div><div>Outputs esperados: alerta ENCERRADO para o vizinho.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta continua SUSPEITA depois da exclusão.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar que pedido de mais informações não encerra o alerta",
+    "descricaoHtml": "<div>Identificador: CT-4.2.2-03</div><div>Objetivo: verificar que o pedido de mais informações não encerra o alerta.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta encerrado por descarte; critério \"laudo MAIS_INFORMACOES não encerra os alertas\".</div><div>Técnica: tabela de decisão por tipo de laudo.</div><div>Preparação: massa de alertas: Sítio Boa Vista do produtor.teste01@valence.dev (latitude -21.1775, longitude -47.8103, MILHO e TOMATE); Fazenda Vizinha do produtor.teste04@valence.dev a 5 km (latitude -21.1325339, longitude -47.8103, MILHO e TOMATE); produtor de apoio produtor.teste08@valence.dev, senha Senha@2026, com Chácara Limite a 10 km (latitude -21.0875679, MILHO), Sítio Além a 10,1 km (latitude -21.0866685, MILHO), Horta Perto a 3 km (latitude -21.1505204, só TOMATE) e Rancho Colado a 0,3 km (latitude -21.174802, MILHO), todas com longitude -47.8103. Nova ocorrência de MILHO do produtor.teste01 em TRIADA com alerta SUSPEITA; agrônomo do README; Swagger autorizado com o token do agrônomo.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution), API Java no Azure App Service e Swagger da API.</div><div>Inputs: laudo MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: alerta sem encerramento.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta ENCERRADO depois de MAIS_INFORMACOES.</div>",
+    "parametros": {
+      "decisao": "MAIS_INFORMACOES",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar que alerta encerrado não volta a suspeita",
+    "descricaoHtml": "<div>Identificador: CT-4.2.2-04</div><div>Objetivo: verificar que o encerramento não é desfeito.</div><div>PBI e critério de aceite: [Confirmação e encerramento de alertas] Produtor vizinho - Ver alerta encerrado por descarte; critério \"alerta ENCERRADO nunca volta a SUSPEITA\".</div><div>Técnica: transição de estado inválida (ENCERRADO para SUSPEITA).</div><div>Preparação: caso CT-4.2.2-01 executado; acesso ao painel do CloudAMQP.</div><div>Ambiente: API Java no Azure App Service, painel de gerenciamento do CloudAMQP (RabbitMQ), Swagger da API e app Valence no Android.</div><div>Inputs: novo evento de triagem e pedido de reprocessamento depois do descarte. Valores em Parameter values.</div><div>Outputs esperados: alerta mantido como ENCERRADO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: alerta volta a SUSPEITA.</div>",
+    "parametros": {
+      "eventoId": "9b8c7d6e-5f40-4a3b-9c2d-1e0f9a8b7c6d",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  }
+]

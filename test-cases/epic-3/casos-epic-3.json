@@ -1,0 +1,211 @@
+[
+  {
+    "titulo": "Validar triagem com hipóteses e severidade a partir de foto válida",
+    "descricaoHtml": "<div>Identificador: CT-3.1.1-01</div><div>Objetivo: verificar que a foto válida gera triagem com hipóteses de praga e severidade.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber hipóteses de praga e severidade; critério \"confiança igual ou maior que 0,6 muda a ocorrência de RECEBIDA para TRIADA; o app mostra a praga provável, a severidade e a explicação no detalhe da ocorrência, com o aviso Resultado de triagem automática, sujeito à confirmação do agrônomo\".</div><div>Técnica: partição de equivalência, classe válida (foto nítida da cultura informada).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência de MILHO com foto nítida de ferrugem. Valores em Parameter values.</div><div>Outputs esperados: status TRIADA, hipóteses, severidade e aviso de triagem automática.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: triagem ausente, severidade fora de 1 a 5, mais de 3 hipóteses ou aviso de triagem automática ausente.</div><div>Notas: o serviço de IA roda só localmente; a API publicada no Azure não chega nele e usa a triagem só pelo texto.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "cultura": "MILHO",
+      "descricao": "Pústulas alaranjadas nas folhas do talhão norte",
+      "foto": "milho-folha-ferrugem.jpg (JPEG nítido, folha inteira, cerca de 2 MB)"
+    }
+  },
+  {
+    "titulo": "Validar os campos da triagem na API dentro dos limites",
+    "descricaoHtml": "<div>Identificador: CT-3.1.1-02</div><div>Objetivo: verificar o formato e os limites dos campos da triagem devolvidos pela API.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber hipóteses de praga e severidade; critério \"triagem traz até 3 hipóteses de praga com probabilidade de 0 a 1, confiança e severidade de 1 a 5; resposta com severidade fora de 1 a 5 ou probabilidade fora de 0 a 1 não é gravada como triagem válida\".</div><div>Técnica: análise de valor limite (severidade 1 e 5, probabilidade 0 e 1, confiança 0.6).</div><div>Preparação: caso CT-3.1.1-01 executado; Swagger da API local autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000) e Swagger da API local, navegador Chrome.</div><div>Inputs: id da ocorrência triada. Valores em Parameter values.</div><div>Outputs esperados: campos da triagem dentro dos limites do contrato.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: campo ausente, valor fora do limite ou pragaProvavel diferente da primeira hipótese.</div>",
+    "parametros": {
+      "limite": "0.6"
+    }
+  },
+  {
+    "titulo": "Validar explicação e fontes da triagem no detalhe da ocorrência",
+    "descricaoHtml": "<div>Identificador: CT-3.1.1-03</div><div>Objetivo: verificar que a triagem mostra a explicação com as fontes consultadas.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber hipóteses de praga e severidade; critério \"triagem traz a explicação baseada nas fichas técnicas e as fontes consultadas (título, fonte e link)\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: caso CT-3.1.1-01 executado com o LLM disponível.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência triada com foto. Valores em Parameter values.</div><div>Outputs esperados: explicação e fontes no app e na API.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: explicação ausente ou fontes sem título, origem e link.</div>",
+    "parametros": {
+      "fonte": "Embrapa"
+    }
+  },
+  {
+    "titulo": "Validar que dados pessoais da descrição não aparecem na triagem",
+    "descricaoHtml": "<div>Identificador: CT-3.1.1-04</div><div>Objetivo: verificar o mascaramento de dados pessoais antes do uso da IA.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber hipóteses de praga e severidade; critério \"e-mail, telefone, CPF, CEP e coordenadas são mascarados antes de qualquer envio à IA e ao LLM\".</div><div>Técnica: partição de equivalência, classe inválida (descrição com dados pessoais).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: descrição com telefone e e-mail fictícios. Valores em Parameter values.</div><div>Outputs esperados: triagem gerada sem o telefone e sem o e-mail.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: telefone ou e-mail repetidos em qualquer texto da triagem.</div>",
+    "parametros": {
+      "descricao": "Folhas com pústulas, me liguem no 11 98765-4321 ou contato.sitio@valence.dev",
+      "telefone": "11 98765-4321",
+      "emailCitado": "contato.sitio@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar evento de ocorrência triada publicado sem dados pessoais",
+    "descricaoHtml": "<div>Identificador: CT-3.1.1-05</div><div>Objetivo: verificar que a ocorrência triada publica o evento ocorrencia.triada sem dados pessoais.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber hipóteses de praga e severidade; critério \"confiança igual ou maior que 0,6 muda a ocorrência de RECEBIDA para TRIADA e publica o evento ocorrencia.triada, sem dados pessoais\".</div><div>Técnica: partição de equivalência, classe válida, com verificação pelo consumidor do evento.</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Observatório .NET publicado e consumindo a fila valence.observatorio; propriedade em Ribeirão Preto/SP.</div><div>Ambiente: API Java local com o serviço de IA local, RabbitMQ no CloudAMQP e Swagger do Observatório .NET publicado no Azure.</div><div>Inputs: ocorrência de MILHO triada com foto válida. Valores em Parameter values.</div><div>Outputs esperados: foco novo no Observatório, só com dados agregados da ocorrência.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco ausente depois da triagem ou qualquer dado pessoal no foco.</div><div>Notas: o município do parâmetro deve ser o mesmo da propriedade usada no teste.</div>",
+    "parametros": {
+      "cultura": "MILHO",
+      "municipio": "Ribeirão Preto"
+    }
+  },
+  {
+    "titulo": "Validar cuidados imediatos e texto de alerta em linguagem simples",
+    "descricaoHtml": "<div>Identificador: CT-3.1.2-01</div><div>Objetivo: verificar que o produtor recebe cuidados imediatos seguros.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber cuidados imediatos seguros; critério \"triagem traz uma lista de cuidados imediatos em linguagem simples; texto de alerta com no máximo 200 caracteres; o app exibe os cuidados em lista no detalhe da ocorrência\".</div><div>Técnica: partição de equivalência e valor limite (texto de alerta até 200 caracteres).</div><div>Preparação: caso CT-3.1.1-01 executado.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência triada. Valores em Parameter values.</div><div>Outputs esperados: cuidados seguros e texto de alerta dentro do limite.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: cuidado ausente, texto de alerta acima de 200 caracteres ou menção a produto ou dose.</div>",
+    "parametros": {
+      "limite": "200"
+    }
+  },
+  {
+    "titulo": "Validar que a triagem não recomenda produto ou dose quando o produtor pede",
+    "descricaoHtml": "<div>Identificador: CT-3.1.2-02</div><div>Objetivo: verificar o filtro de segurança dos cuidados imediatos.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber cuidados imediatos seguros; critério \"cuidado imediato que cita agrotóxico, nome de produto ou dose é descartado antes de salvar; texto de alerta que cita agrotóxico, produto ou dose é trocado por um texto padrão antes de salvar\".</div><div>Técnica: partição de equivalência, classe inválida (pedido explícito de dose).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: descrição pedindo produto e dose. Valores em Parameter values.</div><div>Outputs esperados: cuidados e texto de alerta sem produto ou dose.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: qualquer texto com nome de produto, agrotóxico ou dose.</div>",
+    "parametros": {
+      "descricao": "Manchas escuras nas folhas, qual veneno e quantos ml por litro devo aplicar",
+      "foto": "tomate-requeima.jpg (JPEG nítido, cerca de 2 MB)"
+    }
+  },
+  {
+    "titulo": "Validar texto de alerta exibido ao vizinho sem produto ou dose",
+    "descricaoHtml": "<div>Identificador: CT-3.1.2-03</div><div>Objetivo: verificar que o texto de alerta mostrado aos vizinhos não recomenda produto ou dose.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Receber cuidados imediatos seguros; critério \"texto de alerta usado nos alertas aos vizinhos com no máximo 200 caracteres; nenhum cuidado ou texto de alerta exibido no app recomenda agrotóxico, produto ou dose\".</div><div>Técnica: partição de equivalência, classe inválida (pedido de dose na origem do alerta).</div><div>Preparação: caso CT-3.1.2-02 executado com a ocorrência em TRIADA. Vizinho do caso CT-1.1.1-02 com propriedade de TOMATE a menos de 10 km do Sítio Boa Vista.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: alerta gerado pela ocorrência com pedido de dose. Valores em Parameter values.</div><div>Outputs esperados: texto de alerta seguro e dentro do limite.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: texto de alerta com produto, agrotóxico ou dose, ou acima de 200 caracteres.</div>",
+    "parametros": {
+      "vizinho": "produtor.teste04@valence.dev",
+      "termos": "veneno, ml por litro, kg por hectare, nome comercial de defensivo"
+    }
+  },
+  {
+    "titulo": "Validar reprocessamento da triagem de ocorrência triada",
+    "descricaoHtml": "<div>Identificador: CT-3.1.3-01</div><div>Objetivo: verificar que o produtor reprocessa a triagem.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Reprocessar a triagem; critério \"o botão Refazer triagem aparece no detalhe somente para o dono, com a ocorrência em RECEBIDA, TRIADA ou EM_ANALISE; reprocessamento com sucesso recebe HTTP 200 com a ocorrência atualizada e a nova triagem; o app mostra Analisando a foto... enquanto aguarda\".</div><div>Técnica: transição de estado (TRIADA).</div><div>Preparação: caso CT-3.1.1-01 executado; app apontando para a API local; Swagger da API local autorizado com o produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: toque em Refazer triagem numa ocorrência TRIADA. Valores em Parameter values.</div><div>Outputs esperados: nova triagem com data atualizada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: botão ausente para o dono, erro ao reprocessar ou triagem com a data antiga.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  },
+  {
+    "titulo": "Validar reprocessamento de ocorrência em análise após a IA voltar",
+    "descricaoHtml": "<div>Identificador: CT-3.1.3-02</div><div>Objetivo: verificar que o reprocessamento usa a IA quando ela volta a responder.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Reprocessar a triagem; critério \"o novo resultado segue as mesmas regras da triagem: confiança igual ou maior que 0,6 leva a TRIADA e abaixo de 0,6 leva a EM_ANALISE\".</div><div>Técnica: transição de estado (EM_ANALISE para nova triagem).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Permissão para parar e subir o serviço de IA local.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000) e Swagger da API local, navegador Chrome.</div><div>Inputs: ocorrência criada com a IA parada e reprocessada com a IA ativa. Valores em Parameter values.</div><div>Outputs esperados: triagem refeita com hipóteses da foto.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: reprocessamento recusado em EM_ANALISE ou triagem sem a análise da foto.</div>",
+    "parametros": {
+      "foto": "milho-folha-ferrugem.jpg"
+    }
+  },
+  {
+    "titulo": "Validar reprocessamento recusado em ocorrência com laudo",
+    "descricaoHtml": "<div>Identificador: CT-3.1.3-03</div><div>Objetivo: verificar que a triagem não muda depois do laudo.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Reprocessar a triagem; critério \"ocorrência CONFIRMADA ou DESCARTADA recebe HTTP 422 e a triagem não muda; o botão Refazer triagem aparece só em RECEBIDA, TRIADA ou EM_ANALISE\".</div><div>Técnica: transição de estado inválida e partição de equivalência.</div><div>Preparação: ocorrência do produtor com laudo CONFIRMADA emitido pelo agrônomo do README; Swagger.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e Swagger da API Java no Azure App Service.</div><div>Inputs: POST de triagem em ocorrência CONFIRMADA. Repetir com uma DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: HTTP 422 e ocorrência sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: triagem refeita ou status alterado depois do laudo.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026",
+      "status": "CONFIRMADA"
+    }
+  },
+  {
+    "titulo": "Validar reprocessamento por quem não é dono e em ocorrência inexistente",
+    "descricaoHtml": "<div>Identificador: CT-3.1.3-04</div><div>Objetivo: verificar que só o dono reprocessa a triagem.</div><div>PBI e critério de aceite: [Triagem por IA] Produtor - Reprocessar a triagem; critério \"ocorrência de outro produtor ou inexistente recebe HTTP 404; o botão Refazer triagem aparece somente para o dono\".</div><div>Técnica: tabela de decisão por dono e papel; partição de equivalência (id inexistente).</div><div>Preparação: ocorrência do primeiro produtor em EM_ANALISE; segundo produtor e agrônomo de seed; Swagger e app.</div><div>Ambiente: Android com o app Valence (Firebase App Distribution) e Swagger da API Java no Azure App Service.</div><div>Inputs: POST de outro produtor, POST com id inexistente e detalhe aberto pelo agrônomo. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 nos dois POST e botão ausente para o agrônomo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: triagem reprocessada por quem não é dono ou botão visível para o agrônomo.</div>",
+    "parametros": {
+      "outro": "produtor.teste04@valence.dev",
+      "inexistente": "999999",
+      "agronomo": "agronomo do README"
+    }
+  },
+  {
+    "titulo": "Validar encaminhamento ao agrônomo por confiança abaixo do mínimo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-01</div><div>Objetivo: verificar que caso de baixa confiança vai para o agrônomo sem gerar alerta.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"confiança da IA abaixo de 0,6 leva a ocorrência para EM_ANALISE, com encaminhamento ao agrônomo, sem alerta automático e sem evento; o app informa Sua ocorrência foi encaminhada para análise de um agrônomo\".</div><div>Técnica: análise de valor limite (confiança abaixo de 0.6).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Vizinho do caso CT-1.1.1-02 com propriedade de MILHO a menos de 10 km do Sítio Boa Vista.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto com sintoma discreto, de baixa confiança. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE, mensagem de encaminhamento e nenhum alerta ao vizinho.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: status TRIADA com confiança abaixo de 0.6 ou alerta enviado ao vizinho.</div><div>Notas: se a foto escolhida der confiança igual ou maior que 0.6, trocar por outra com sintoma mais discreto e registrar a foto usada.</div>",
+    "parametros": {
+      "descricao": "Algumas folhas com manchas pequenas e pouco visíveis",
+      "foto": "milho-sintoma-leve.jpg (JPEG nítido com sintoma discreto)",
+      "vizinho": "produtor.teste04@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar caso encaminhado na fila de análise do agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-02</div><div>Objetivo: verificar que o caso encaminhado chega ao agrônomo.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"a ocorrência encaminhada aparece na fila de análise do agrônomo\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: caso CT-3.2.1-01 executado; agrônomo de seed; Swagger da API local.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000) e Swagger da API local, navegador Chrome.</div><div>Inputs: consulta à fila com status EM_ANALISE. Valores em Parameter values.</div><div>Outputs esperados: ocorrência encaminhada presente na fila.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: caso encaminhado fora da fila do agrônomo.</div>",
+    "parametros": {
+      "agronomo": "agronomo do README"
+    }
+  },
+  {
+    "titulo": "Validar foto borrada recusada com motivo e encaminhada ao agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-03</div><div>Objetivo: verificar a recusa da foto borrada.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: partição de equivalência, classe inválida (foto tremida).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Vizinho do caso CT-1.1.1-02 com propriedade de MILHO a menos de 10 km do Sítio Boa Vista.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto tremida de folha de milho. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo IMAGEM_BORRADA, sem hipótese e sem alerta.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foto aceita como válida, motivo diferente, texto técnico no app ou alerta enviado.</div>",
+    "parametros": {
+      "foto": "milho-borrada.jpg (JPEG tremido)",
+      "motivo": "IMAGEM_BORRADA"
+    }
+  },
+  {
+    "titulo": "Validar foto escura recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-04</div><div>Objetivo: verificar a recusa da foto escura.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: partição de equivalência, classe inválida (iluminação insuficiente).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto escura de folha de milho. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo IMAGEM_ESCURA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foto aceita ou motivo diferente.</div>",
+    "parametros": {
+      "foto": "milho-escura.jpg (JPEG tirado à noite sem flash)",
+      "motivo": "IMAGEM_ESCURA"
+    }
+  },
+  {
+    "titulo": "Validar foto que não é de planta recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-05</div><div>Objetivo: verificar a recusa de foto sem planta.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: partição de equivalência, classe inválida (objeto que não é planta).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto de um objeto. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo NAO_E_PLANTA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: hipótese de praga gerada para foto sem planta.</div>",
+    "parametros": {
+      "foto": "cadeira.jpg (foto nítida de uma cadeira)",
+      "motivo": "NAO_E_PLANTA"
+    }
+  },
+  {
+    "titulo": "Validar foto de cultura diferente da informada recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-06</div><div>Objetivo: verificar a recusa quando a foto não é da cultura informada.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: tabela de decisão (cultura informada contra cultura detectada).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência de TOMATE com foto de milho. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo CULTURA_DIVERGENTE.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: triagem de tomate gerada a partir da foto de milho.</div>",
+    "parametros": {
+      "cultura": "TOMATE",
+      "foto": "milho-folha-ferrugem.jpg",
+      "motivo": "CULTURA_DIVERGENTE"
+    }
+  },
+  {
+    "titulo": "Validar foto de baixa resolução recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-07</div><div>Objetivo: verificar a recusa da foto de baixa resolução.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: análise de valor limite (resolução abaixo do mínimo do serviço de IA).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto de 120 x 90 pixels. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo RESOLUCAO_BAIXA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foto pequena aceita como válida.</div>",
+    "parametros": {
+      "foto": "milho-pequena.jpg (JPEG com 120 x 90 pixels)",
+      "motivo": "RESOLUCAO_BAIXA"
+    }
+  },
+  {
+    "titulo": "Validar confiança igual ao mínimo configurado em IA_CONFIANCA_MINIMA",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-08</div><div>Objetivo: verificar o valor limite da confiança e a configuração por variável de ambiente.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"confiança igual a 0,6 segue o fluxo normal: ocorrência TRIADA, evento ocorrencia.triada e alertas de suspeita; o limite de 0,6 é configurado pela variável de ambiente IA_CONFIANCA_MINIMA\".</div><div>Técnica: análise de valor limite (confiança igual ao mínimo e logo acima dele).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Vizinho do caso CT-1.1.1-02 com propriedade de MILHO a menos de 10 km do Sítio Boa Vista. Permissão para reiniciar a API local alterando o .env.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: mesma foto triada com o limite igual à confiança e com o limite 0.0001 acima. Valores em Parameter values.</div><div>Outputs esperados: TRIADA com alerta no limite exato; EM_ANALISE logo acima do limite.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: EM_ANALISE com confiança igual ao limite, ou TRIADA com confiança abaixo do limite.</div><div>Notas: a visão computacional devolve a mesma confiança para a mesma foto, o que permite acertar o limite exato; ao final, voltar IA_CONFIANCA_MINIMA para 0.6.</div>",
+    "parametros": {
+      "foto": "milho-folha-ferrugem.jpg",
+      "vizinho": "produtor.teste04@valence.dev",
+      "incremento": "0.0001"
+    }
+  },
+  {
+    "titulo": "Validar foto clara demais recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-09</div><div>Objetivo: verificar a recusa da foto com excesso de luz.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: partição de equivalência, classe inválida.</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto superexposta de folha de milho. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo IMAGEM_CLARA.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foto aceita ou motivo diferente.</div>",
+    "parametros": {
+      "foto": "milho-estourada.jpg (JPEG com sol direto, quase branco)",
+      "motivo": "IMAGEM_CLARA"
+    }
+  },
+  {
+    "titulo": "Validar foto de cultura fora do escopo recusada com motivo",
+    "descricaoHtml": "<div>Identificador: CT-3.2.1-10</div><div>Objetivo: verificar a recusa de foto de cultura que o Valence não atende.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso de baixa confiança ou foto inválida; critério \"foto recusada pelo serviço de IA leva a ocorrência para EM_ANALISE com o motivo da recusa, sem chamar o LLM e sem evento; o app mostra o motivo da recusa em linguagem simples\".</div><div>Técnica: partição de equivalência, classe inválida (cultura fora de MILHO, TOMATE e BATATA).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: foto de folha de soja em ocorrência de MILHO. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE com motivo CULTURA_FORA_DO_ESCOPO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: hipótese de praga gerada para a soja.</div>",
+    "parametros": {
+      "foto": "soja-folha.jpg (foto nítida de folha de soja)",
+      "motivo": "CULTURA_FORA_DO_ESCOPO"
+    }
+  },
+  {
+    "titulo": "Validar triagem só pelo texto com o serviço de IA fora do ar",
+    "descricaoHtml": "<div>Identificador: CT-3.2.2-01</div><div>Objetivo: verificar o fallback da triagem pelo texto quando a visão computacional não responde.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso com IA indisponível; critério \"serviço de visão computacional fora do ar ou sem resposta: o LLM gera a triagem só com o texto do produtor e segue a regra da confiança mínima; o registro e o envio da foto nunca falham por causa da IA, com HTTP 201\".</div><div>Técnica: partição de equivalência por disponibilidade de dependência (serviço de IA indisponível).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Permissão para parar o serviço de IA local.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência com foto enviada com o serviço de IA parado. Valores em Parameter values.</div><div>Outputs esperados: triagem pelo texto, sem erro para o produtor.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: erro 500, ocorrência sem triagem e sem encaminhamento, ou foto perdida.</div><div>Notas: é o mesmo comportamento da API publicada no Azure, que não alcança o serviço de IA.</div>",
+    "parametros": {
+      "descricao": "Pústulas alaranjadas espalhadas nas folhas, parecendo ferrugem"
+    }
+  },
+  {
+    "titulo": "Validar encaminhamento ao agrônomo com o LLM fora do ar",
+    "descricaoHtml": "<div>Identificador: CT-3.2.2-02</div><div>Objetivo: verificar o encaminhamento quando o LLM falha.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso com IA indisponível; critério \"LLM fora do ar, com erro 429, sem resposta no tempo limite ou com saída inválida: EM_ANALISE com triagem parcial e encaminhamento ao agrônomo; nenhum alerta automático e o evento ocorrencia.triada não é publicado; o app informa Sua ocorrência foi encaminhada para análise de um agrônomo\".</div><div>Técnica: partição de equivalência por disponibilidade de dependência (LLM indisponível).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Vizinho do caso CT-1.1.1-02 com propriedade de MILHO a menos de 10 km do Sítio Boa Vista. Chave do LLM trocada por um valor inválido só no .env local; restaurar a chave depois do teste.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência com foto enviada com o LLM recusando a chamada. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE, triagem parcial e nenhum alerta.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: erro 500, status TRIADA ou alerta enviado sem triagem completa.</div>",
+    "parametros": {
+      "config": "LLM_API_KEY com valor inválido de teste"
+    }
+  },
+  {
+    "titulo": "Validar encaminhamento com o serviço de IA e o LLM fora do ar",
+    "descricaoHtml": "<div>Identificador: CT-3.2.2-03</div><div>Objetivo: verificar que a ocorrência não se perde quando toda a IA falha.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso com IA indisponível; critério \"o registro da ocorrência e o envio da foto nunca falham por causa da IA, com HTTP 201; a ocorrência aparece na fila de análise do agrônomo\".</div><div>Técnica: tabela de decisão (serviço de IA e LLM indisponíveis ao mesmo tempo).</div><div>Preparação: produtor do caso CT-1.1.1-01 com a propriedade Sítio Boa Vista (MILHO e TOMATE); API Java e serviço de IA rodando localmente com IA_CONFIANCA_MINIMA=0.6; chave do LLM válida no .env local; Swagger autorizado com o token do produtor. Permissão para parar o serviço de IA e trocar a chave do LLM só no .env local; restaurar depois do teste.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: ocorrência com foto enviada com o serviço de IA parado e o LLM recusando a chamada. Valores em Parameter values.</div><div>Outputs esperados: EM_ANALISE, foto preservada e caso na fila do agrônomo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: erro 500, ocorrência perdida ou fora da fila do agrônomo.</div>",
+    "parametros": {
+      "config": "LLM_API_KEY com valor inválido de teste"
+    }
+  },
+  {
+    "titulo": "Validar refazer triagem pelo app depois que a IA volta",
+    "descricaoHtml": "<div>Identificador: CT-3.2.2-04</div><div>Objetivo: verificar que o dono refaz a triagem quando a IA volta.</div><div>PBI e critério de aceite: [Encaminhamento ao agrônomo por baixa confiança] Sistema - Encaminhar caso com IA indisponível; critério \"o dono pode refazer a triagem depois que a IA voltar\".</div><div>Técnica: transição de estado (IA indisponível para IA disponível).</div><div>Preparação: caso CT-3.2.2-03 executado; permissão para subir o serviço de IA e restaurar a chave do LLM no .env local.</div><div>Ambiente: API Java local (porta 8080) com o serviço de IA local (porta 8000), Swagger da API local e app Valence no Android apontando para a API local.</div><div>Inputs: toque em Refazer triagem com a IA de volta. Valores em Parameter values.</div><div>Outputs esperados: triagem completa gerada para a ocorrência encaminhada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: botão ausente, erro ao refazer ou triagem ainda parcial com a IA no ar.</div>",
+    "parametros": {
+      "email": "produtor.teste01@valence.dev",
+      "senha": "Senha@2026"
+    }
+  }
+]

@@ -1,0 +1,407 @@
+[
+  {
+    "titulo": "Validar consulta pública de focos sem login",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-01</div><div>Objetivo: verificar a lista pública de focos.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"consulta de focos sem login; foco mostra somente id, cultura, praga provável, severidade, município, UF, status, data da ocorrência, data de atualização e links; da ocorrência mais recente para a mais antiga; datas em UTC no formato ISO-8601\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: consulta sem filtros e sem token. Valores em Parameter values.</div><div>Outputs esperados: lista com os campos e a ordem do critério.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 401, campo a mais ou a menos, ordem errada ou data fora de UTC.</div>",
+    "parametros": {
+      "rota": "/api/publico/focos"
+    }
+  },
+  {
+    "titulo": "Validar filtros de cultura, UF, município e data dos focos",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-02</div><div>Objetivo: verificar os filtros dos focos.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"filtros opcionais por cultura (maiúsculas ou minúsculas), UF, município e data inicial (desde, em ISO-8601)\".</div><div>Técnica: partição de equivalência, classes válidas.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: filtros de cultura, UF, município e data. Valores em Parameter values.</div><div>Outputs esperados: listas filtradas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco fora do filtro na lista.</div>",
+    "parametros": {
+      "cultura": "milho",
+      "municipio": "ribeirão preto",
+      "desde": "2026-11-01T00:00:00Z"
+    }
+  },
+  {
+    "titulo": "Validar paginação dos focos com links que mantêm os filtros",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-03</div><div>Objetivo: verificar a paginação e os links HATEOAS.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"paginação por deslocamento (padrão 0) e registroRetornado (padrão 10, de 1 a 100), com total de registros e links self, prev e next que mantêm os filtros\".</div><div>Técnica: análise de valor limite (registroRetornado 1 e 100) e padrões.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Pelo menos 2 focos de MILHO.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: consultas com e sem paginação. Valores em Parameter values.</div><div>Outputs esperados: páginas corretas e links com os filtros.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: link sem o filtro, padrão diferente ou limite válido recusado.</div>",
+    "parametros": {
+      "minimo": "1",
+      "maximo": "100"
+    }
+  },
+  {
+    "titulo": "Validar detalhe público de um foco",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-04</div><div>Objetivo: verificar o detalhe de foco sem login.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"consulta do detalhe de um foco sem login\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: id de foco existente. Valores em Parameter values.</div><div>Outputs esperados: detalhe do foco.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 401 ou campo ausente.</div>",
+    "parametros": {
+      "rota": "/api/publico/focos/{id}"
+    }
+  },
+  {
+    "titulo": "Validar que o foco não expõe dados pessoais nem o id da ocorrência",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-05</div><div>Objetivo: verificar a anonimização dos dados abertos.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"sem o id da ocorrência original e sem nome, e-mail, telefone ou coordenada\".</div><div>Técnica: partição de equivalência, classe inválida (dado pessoal exposto).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: lista e detalhe de focos. Valores em Parameter values.</div><div>Outputs esperados: nenhum dado pessoal nem ocorrenciaId.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: qualquer dado de Parameter values na resposta.</div>",
+    "parametros": {
+      "dados": "ocorrenciaId, nome, e-mail, telefone, latitude, longitude, Sítio Boa Vista"
+    }
+  },
+  {
+    "titulo": "Validar lista de focos vazia",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-06</div><div>Objetivo: verificar a resposta sem resultados.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"lista sem resultados recebe HTTP 204 sem corpo\".</div><div>Técnica: partição de equivalência (lista vazia).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Nenhum foco de BATATA no Acre.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: filtro sem resultados. Valores em Parameter values.</div><div>Outputs esperados: HTTP 204 sem corpo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 com lista vazia ou 404.</div>",
+    "parametros": {
+      "uf": "AC"
+    }
+  },
+  {
+    "titulo": "Validar filtros inválidos na consulta de focos",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-07</div><div>Objetivo: verificar a validação dos filtros.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"filtro inválido recebe HTTP 400 com a lista de campos: cultura fora de MILHO, TOMATE e BATATA, UF inexistente, município com mais de 100 caracteres, deslocamento negativo, registroRetornado fora de 1 a 100, data ou número em formato errado\".</div><div>Técnica: partição de equivalência e análise de valor limite (0, 101, -1 e 101 caracteres).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: um filtro inválido por chamada. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com o campo em cada chamada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500 em filtro inválido.</div>",
+    "parametros": {
+      "cultura": "SOJA",
+      "uf": "XX",
+      "tamanho": "101",
+      "deslocamento": "-1",
+      "desde": "ontem"
+    }
+  },
+  {
+    "titulo": "Validar detalhe de foco inexistente",
+    "descricaoHtml": "<div>Identificador: CT-7.1.1-08</div><div>Objetivo: verificar o detalhe de foco que não existe.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar focos anonimizados; critério \"detalhe de foco inexistente recebe HTTP 404\".</div><div>Técnica: partição de equivalência, classe inválida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: id inexistente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500.</div>",
+    "parametros": {
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar estatísticas por UF e período",
+    "descricaoHtml": "<div>Identificador: CT-7.1.2-01</div><div>Objetivo: verificar as estatísticas públicas.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar estatísticas por período; critério \"consulta de estatísticas sem login; resposta com UF, período em dias, data inicial e final, total de focos e contagens por status, cultura, praga e município (no formato Município/UF), cada uma em ordem decrescente de total; a resposta traz links HATEOAS\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: UF SP e período de 30 dias. Valores em Parameter values.</div><div>Outputs esperados: estatísticas completas e ordenadas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: campo ausente, ordem errada ou município fora do formato.</div>",
+    "parametros": {
+      "uf": "SP",
+      "periodo": "30"
+    }
+  },
+  {
+    "titulo": "Validar estatísticas do Brasil inteiro com período padrão",
+    "descricaoHtml": "<div>Identificador: CT-7.1.2-02</div><div>Objetivo: verificar os padrões das estatísticas.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar estatísticas por período; critério \"filtro opcional por UF; sem UF, as estatísticas cobrem o Brasil inteiro; período com padrão de 30\".</div><div>Técnica: partição de equivalência (parâmetros ausentes).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: consulta sem UF e sem período. Valores em Parameter values.</div><div>Outputs esperados: Brasil inteiro e 30 dias.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: uf preenchida ou período diferente de 30.</div>",
+    "parametros": {
+      "padrao": "30"
+    }
+  },
+  {
+    "titulo": "Validar período de 1 e de 365 dias",
+    "descricaoHtml": "<div>Identificador: CT-7.1.2-03</div><div>Objetivo: verificar os limites válidos do período.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar estatísticas por período; critério \"período de 1 a 365 dias\".</div><div>Técnica: análise de valor limite (1 e 365).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: períodos 1 e 365. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 400 em valor válido.</div>",
+    "parametros": {
+      "minimo": "1",
+      "maximo": "365"
+    }
+  },
+  {
+    "titulo": "Validar período e UF inválidos nas estatísticas",
+    "descricaoHtml": "<div>Identificador: CT-7.1.2-04</div><div>Objetivo: verificar a validação das estatísticas.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar estatísticas por período; critério \"período fora da faixa ou em formato errado recebe HTTP 400 com a mensagem do campo; UF inexistente recebe HTTP 400 com a mensagem do campo\".</div><div>Técnica: análise de valor limite (0 e 366) e partição de equivalência.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: período 0, 366 e texto; UF XX. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 em todas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500.</div>",
+    "parametros": {
+      "texto": "trinta",
+      "uf": "XX"
+    }
+  },
+  {
+    "titulo": "Validar estatísticas zeradas sem focos no período",
+    "descricaoHtml": "<div>Identificador: CT-7.1.2-05</div><div>Objetivo: verificar a resposta sem focos.</div><div>PBI e critério de aceite: [Dados abertos de focos] Cidadão - Consultar estatísticas por período; critério \"sem focos no período, a resposta é HTTP 200 com o total e as contagens zerados\".</div><div>Técnica: partição de equivalência (período sem focos).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Nenhum foco no Acre no último dia.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: UF sem focos. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 zerado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 204, 404 ou erro.</div>",
+    "parametros": {
+      "uf": "AC"
+    }
+  },
+  {
+    "titulo": "Validar bloqueio na requisição 61 dentro de 60 segundos",
+    "descricaoHtml": "<div>Identificador: CT-7.1.3-01</div><div>Objetivo: verificar o limite dos endpoints públicos.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Limitar excesso de requisições; critério \"endpoints públicos aceitam até 60 requisições a cada 60 segundos por IP; a requisição número 61 recebe HTTP 429 com Muitas requisições e Retry-After; depois do Retry-After, o mesmo IP volta a receber HTTP 200\".</div><div>Técnica: análise de valor limite (60 e 61 requisições).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Laço de requisições preparado no PowerShell.</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: 61 requisições em menos de 60 segundos. Valores em Parameter values.</div><div>Outputs esperados: 60 aceitas, a 61 com HTTP 429 e liberação depois do Retry-After.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: requisição 61 aceita, 429 sem Retry-After ou bloqueio permanente.</div>",
+    "parametros": {
+      "rota": "GET /api/publico/focos"
+    }
+  },
+  {
+    "titulo": "Validar health e Swagger fora do limite de requisições",
+    "descricaoHtml": "<div>Identificador: CT-7.1.3-02</div><div>Objetivo: verificar as rotas fora do limite.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Limitar excesso de requisições; critério \"os endpoints /health e /swagger ficam fora do limite\".</div><div>Técnica: partição de equivalência (rotas isentas).</div><div>Preparação: caso CT-7.1.3-01 executado, com o IP ainda bloqueado.</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: chamadas a /health e /swagger com o IP bloqueado. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 nas duas.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 429 em /health ou /swagger.</div>",
+    "parametros": {
+      "health": "GET /health",
+      "swagger": "/swagger"
+    }
+  },
+  {
+    "titulo": "Validar que o limite de um IP não afeta outro",
+    "descricaoHtml": "<div>Identificador: CT-7.1.3-03</div><div>Objetivo: verificar o isolamento do limite por IP.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Limitar excesso de requisições; critério \"o limite de um IP não afeta outro IP\".</div><div>Técnica: partição de equivalência (dois IPs).</div><div>Preparação: caso CT-7.1.3-01 executado; celular com dados móveis.</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: requisição de outro IP. Valores em Parameter values.</div><div>Outputs esperados: HTTP 200 no outro IP.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: outro IP bloqueado.</div>",
+    "parametros": {
+      "rede": "dados móveis, fora do Wi-Fi do computador"
+    }
+  },
+  {
+    "titulo": "Validar limite configurado por variáveis de ambiente",
+    "descricaoHtml": "<div>Identificador: CT-7.1.3-04</div><div>Objetivo: verificar que o limite vem da configuração.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Limitar excesso de requisições; critério \"os limites são configurados por variáveis de ambiente (RateLimiting__Publica__Limite e RateLimiting__Publica__JanelaSegundos)\".</div><div>Técnica: partição de equivalência por configuração.</div><div>Preparação: Observatório local com as variáveis alteradas; voltar aos padrões ao final.</div><div>Ambiente: Observatório .NET local (porta 5080) com Swagger, ligado ao Oracle e ao CloudAMQP.</div><div>Inputs: limite de 3 em 30 segundos. Valores em Parameter values.</div><div>Outputs esperados: bloqueio na quarta chamada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: bloqueio só na chamada 61.</div>",
+    "parametros": {
+      "limite": "3",
+      "janela": "30"
+    }
+  },
+  {
+    "titulo": "Validar foco criado como suspeita pelo evento de triagem",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-01</div><div>Objetivo: verificar a criação do foco pelo evento.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"o Observatório consome a fila valence.observatorio com as routing keys ocorrencia.triada e laudo.emitido; evento ocorrencia.triada cria o foco com status SUSPEITA\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: ambiente integrado no ar; produtor.teste01 com o Sítio Boa Vista.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: ocorrência triada. Valores em Parameter values.</div><div>Outputs esperados: foco SUSPEITA no Observatório.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco ausente ou com outro status.</div>",
+    "parametros": {
+      "fila": "valence.observatorio"
+    }
+  },
+  {
+    "titulo": "Validar mudança do foco para confirmado e descartado pelo laudo",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-02</div><div>Objetivo: verificar a atualização do foco pelo laudo.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"evento laudo.emitido com CONFIRMADA ou DESCARTADA muda o foco para CONFIRMADO ou DESCARTADO\".</div><div>Técnica: transição de estado (SUSPEITA para CONFIRMADO e para DESCARTADO).</div><div>Preparação: caso CT-7.1.4-01 executado; outra ocorrência TRIADA.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: laudos CONFIRMADA e DESCARTADA. Valores em Parameter values.</div><div>Outputs esperados: focos CONFIRMADO e DESCARTADO.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco sem mudança.</div>",
+    "parametros": {
+      "decisao1": "CONFIRMADA",
+      "decisao2": "DESCARTADA"
+    }
+  },
+  {
+    "titulo": "Validar foco criado pelo laudo quando não houve triagem",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-03</div><div>Objetivo: verificar a criação do foco quando o laudo chega antes da triagem.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"evento laudo.emitido cria o foco quando a ocorrência não passou pela triagem\".</div><div>Técnica: tabela de decisão (laudo sem foco anterior).</div><div>Preparação: ambiente integrado no ar.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: laudo de ocorrência sem triagem. Valores em Parameter values.</div><div>Outputs esperados: foco CONFIRMADO criado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: nenhum foco criado.</div>",
+    "parametros": {
+      "decisao": "CONFIRMADA"
+    }
+  },
+  {
+    "titulo": "Validar que mais informações não muda o status do foco",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-04</div><div>Objetivo: verificar que o pedido de informações não altera o foco.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"evento laudo.emitido com MAIS_INFORMACOES não muda o status do foco\".</div><div>Técnica: tabela de decisão por tipo de laudo.</div><div>Preparação: ocorrência TRIADA com foco SUSPEITA.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: laudo MAIS_INFORMACOES. Valores em Parameter values.</div><div>Outputs esperados: foco sem mudança.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco CONFIRMADO ou DESCARTADO.</div>",
+    "parametros": {
+      "decisao": "MAIS_INFORMACOES"
+    }
+  },
+  {
+    "titulo": "Validar evento repetido sem duplicar foco",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-05</div><div>Objetivo: verificar a idempotência do consumidor do Observatório.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"evento repetido é descartado pelo eventoId, e existe no máximo 1 foco por ocorrência\".</div><div>Técnica: partição de equivalência, classe inválida (mensagem repetida).</div><div>Preparação: acesso ao painel do CloudAMQP; corpo conforme a seção 8 do contrato, sem dados pessoais.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: mesma mensagem duas vezes e mesma ocorrência com outro eventoId. Valores em Parameter values.</div><div>Outputs esperados: um foco só.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: foco duplicado.</div>",
+    "parametros": {
+      "eventoId": "5e4d3c2b-1a09-4f8e-9d7c-6b5a4f3e2d1c"
+    }
+  },
+  {
+    "titulo": "Validar rejeição de mensagem inválida sem reenvio",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-06</div><div>Objetivo: verificar o tratamento de mensagem inválida.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"mensagem inválida é rejeitada sem reenvio e registrada no log sem dados pessoais\".</div><div>Técnica: partição de equivalência, classe inválida (mensagem malformada).</div><div>Preparação: acesso ao CloudAMQP e ao Log stream do App Service.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: mensagem que não é JSON. Valores em Parameter values.</div><div>Outputs esperados: rejeição registrada e nenhum foco.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: mensagem reenfileirada sem fim ou dado pessoal no log.</div>",
+    "parametros": {
+      "corpo": "texto qualquer que não é JSON"
+    }
+  },
+  {
+    "titulo": "Validar processamento dos eventos que aguardaram com o Observatório desligado",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-07</div><div>Objetivo: verificar a durabilidade da fila.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"com o Observatório desligado, os eventos aguardam na fila e são processados quando ele volta\".</div><div>Técnica: transição de estado (consumidor parado e religado).</div><div>Preparação: permissão para parar e iniciar o App Service do Observatório.</div><div>Ambiente: API Java e Observatório .NET no Azure, painel do CloudAMQP, Swagger das duas APIs e app Valence no Android.</div><div>Inputs: evento publicado com o consumidor parado. Valores em Parameter values.</div><div>Outputs esperados: evento processado ao religar.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: evento perdido.</div>",
+    "parametros": {
+      "fila": "valence.observatorio"
+    }
+  },
+  {
+    "titulo": "Validar health check com o RabbitMQ fora do ar",
+    "descricaoHtml": "<div>Identificador: CT-7.1.4-08</div><div>Objetivo: verificar o health check com o broker indisponível.</div><div>PBI e critério de aceite: [Dados abertos de focos] Sistema - Registrar focos a partir dos eventos sem duplicar; critério \"o health check mostra o RabbitMQ como Degraded quando o broker está fora do ar, com HTTP 200\".</div><div>Técnica: partição de equivalência por disponibilidade de dependência.</div><div>Preparação: Observatório local com a URI do broker inválida; voltar ao valor certo no final.</div><div>Ambiente: Observatório .NET local (porta 5080) com Swagger, ligado ao Oracle e ao CloudAMQP.</div><div>Inputs: broker inacessível. Valores em Parameter values.</div><div>Outputs esperados: RabbitMQ Degraded e HTTP 200.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 503 ou erro no health check.</div>",
+    "parametros": {
+      "uri": "amqps://host-inexistente.invalid"
+    }
+  },
+  {
+    "titulo": "Validar login do gestor no Observatório",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-01</div><div>Objetivo: verificar o login no Observatório.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"login com e-mail e senha corretos recebe HTTP 200 com token, tipo Bearer, data de expiração em UTC e papel; o token vale 120 minutos\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: credenciais corretas do gestor. Valores em Parameter values.</div><div>Outputs esperados: token válido por 120 minutos.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP diferente de 200 ou expiração diferente de 120 minutos.</div>",
+    "parametros": {
+      "gestor": "gestor de teste do README do valence-dotnet",
+      "minutos": "120"
+    }
+  },
+  {
+    "titulo": "Validar consulta do usuário logado no Observatório",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-02</div><div>Objetivo: verificar o endpoint do usuário logado.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"a consulta do usuário logado (/api/auth/me) devolve id, papel e expiração\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: token válido. Valores em Parameter values.</div><div>Outputs esperados: dados do usuário logado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 401 com token válido ou campo ausente.</div>",
+    "parametros": {
+      "gestor": "gestor de teste do README do valence-dotnet"
+    }
+  },
+  {
+    "titulo": "Validar login com e-mail inexistente e senha errada",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-03</div><div>Objetivo: verificar que o login não revela se o e-mail existe.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"e-mail inexistente ou senha errada recebe HTTP 401 com a mesma mensagem E-mail ou senha inválidos.\".</div><div>Técnica: partição de equivalência, classes inválidas.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: e-mail inexistente e senha errada. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 com a mesma mensagem.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: mensagens diferentes ou HTTP 200.</div>",
+    "parametros": {
+      "email": "nao.existe@valence.dev",
+      "senha": "SenhaErrada@1"
+    }
+  },
+  {
+    "titulo": "Validar login com campos em branco e acima do limite",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-04</div><div>Objetivo: verificar a validação do login.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"e-mail ou senha em branco, e-mail com mais de 150 caracteres ou senha com mais de 100 recebe HTTP 400 com a lista de campos\".</div><div>Técnica: análise de valor limite (151 e 101) e partição de equivalência (em branco).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Textos de 151 e 101 caracteres preparados.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: campos em branco e acima do limite. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com os campos.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 401 ou 500.</div>",
+    "parametros": {
+      "tamEmail": "151",
+      "tamSenha": "101"
+    }
+  },
+  {
+    "titulo": "Validar usuário logado sem token, com token inválido e com token da API Java",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-05</div><div>Objetivo: verificar que só o token do Observatório é aceito.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"sem token ou com token inválido recebe HTTP 401 com o cabeçalho WWW-Authenticate: Bearer; o token é emitido pelo próprio Observatório e o token da API Java não é aceito\".</div><div>Técnica: partição de equivalência, classes inválidas.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Usuário da API Java para gerar o token dela.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: sem token, token malformado e token da API Java. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401 nos três.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: token da API Java aceito.</div>",
+    "parametros": {
+      "token": "abc.def.ghi"
+    }
+  },
+  {
+    "titulo": "Validar limite de tentativas de login por minuto",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-06</div><div>Objetivo: verificar a proteção contra força bruta.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"mais de 5 tentativas de login por minuto do mesmo IP recebe HTTP 429 com o cabeçalho Retry-After\".</div><div>Técnica: análise de valor limite (5 e 6 tentativas).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: 6 tentativas em menos de 1 minuto. Valores em Parameter values.</div><div>Outputs esperados: HTTP 429 na sexta.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: sexta tentativa processada.</div>",
+    "parametros": {
+      "vezes": "5"
+    }
+  },
+  {
+    "titulo": "Validar que as credenciais de teste não aparecem no Swagger",
+    "descricaoHtml": "<div>Identificador: CT-7.2.1-07</div><div>Objetivo: verificar que as credenciais de teste ficam só no README.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Entrar no Observatório; critério \"as credenciais de teste do gestor e do agrônomo ficam apenas no README do repositório valence-dotnet\".</div><div>Técnica: partição de equivalência, classe inválida (credencial exposta).</div><div>Preparação: acesso ao Swagger e ao repositório valence-dotnet.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: Swagger, health e README. Valores em Parameter values.</div><div>Outputs esperados: credenciais só no README.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: credencial real no Swagger ou no health.</div>",
+    "parametros": {
+      "procura": "senha, password, e-mail do gestor de teste"
+    }
+  },
+  {
+    "titulo": "Validar publicação de boletim pelo gestor",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-01</div><div>Objetivo: verificar a publicação e a normalização pelo IBGE.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"publicação com sucesso recebe HTTP 201 com o cabeçalho Location e o boletim com id, município, UF, título, texto, data de criação e links; município gravado com o nome oficial e a UF em maiúsculas\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: boletim válido com município em minúsculas. Valores em Parameter values.</div><div>Outputs esperados: boletim criado com nome oficial e UF maiúscula.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP diferente de 201, Location ausente ou município sem normalizar.</div>",
+    "parametros": {
+      "chave": "2f1e0d9c-8b7a-4c6d-9e5f-4a3b2c1d0e9f",
+      "municipio": "ribeirao preto",
+      "uf": "sp"
+    }
+  },
+  {
+    "titulo": "Validar repetição com a mesma chave e o mesmo corpo",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-02</div><div>Objetivo: verificar a idempotência da publicação.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"repetição com a mesma Idempotency-Key e o mesmo corpo devolve a resposta original com o mesmo Location e o cabeçalho Idempotency-Replayed: true, sem criar outro boletim\".</div><div>Técnica: partição de equivalência (requisição repetida).</div><div>Preparação: caso CT-7.2.2-01 executado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: mesma chave e mesmo corpo. Valores em Parameter values.</div><div>Outputs esperados: resposta original sem novo boletim.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: segundo boletim criado ou cabeçalho ausente.</div>",
+    "parametros": {
+      "chave": "2f1e0d9c-8b7a-4c6d-9e5f-4a3b2c1d0e9f"
+    }
+  },
+  {
+    "titulo": "Validar mesma chave com corpo diferente",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-03</div><div>Objetivo: verificar o conflito de chave.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"mesma Idempotency-Key com corpo diferente recebe HTTP 409\".</div><div>Técnica: partição de equivalência, classe inválida.</div><div>Preparação: caso CT-7.2.2-01 executado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: chave repetida com corpo diferente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 409.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim criado ou resposta original devolvida.</div>",
+    "parametros": {
+      "chave": "2f1e0d9c-8b7a-4c6d-9e5f-4a3b2c1d0e9f",
+      "titulo": "Alerta de ferrugem"
+    }
+  },
+  {
+    "titulo": "Validar publicação sem Idempotency-Key e com chave fora do formato",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-04</div><div>Objetivo: verificar a obrigatoriedade da chave.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"publicação exige o cabeçalho Idempotency-Key no formato UUID; ausente ou fora do formato recebe HTTP 400\".</div><div>Técnica: partição de equivalência, classes inválidas.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: chave ausente e fora do formato. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim criado.</div>",
+    "parametros": {
+      "chave": "chave-123"
+    }
+  },
+  {
+    "titulo": "Validar publicação de boletim por agrônomo e sem token",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-05</div><div>Objetivo: verificar que só o gestor publica.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"somente o papel GESTOR publica; AGRONOMO recebe HTTP 403 e requisição sem token recebe HTTP 401\".</div><div>Técnica: tabela de decisão por papel.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Token do agrônomo do Observatório.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: publicação como agrônomo e sem token. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 e 401.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim criado.</div>",
+    "parametros": {
+      "agronomo": "agrônomo de teste do README do valence-dotnet"
+    }
+  },
+  {
+    "titulo": "Validar boletim com município, título e texto no limite",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-06</div><div>Objetivo: verificar os limites válidos do boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"boletim exige município (até 100 caracteres), UF, título (até 150) e texto (até 4000)\".</div><div>Técnica: análise de valor limite (150 e 4000).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Textos de 150 e 4000 caracteres preparados.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: título e texto no limite. Valores em Parameter values.</div><div>Outputs esperados: HTTP 201.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 400 em valor válido.</div>",
+    "parametros": {
+      "titulo": "150",
+      "texto": "4000"
+    }
+  },
+  {
+    "titulo": "Validar boletim com campo ausente ou acima do limite",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-07</div><div>Objetivo: verificar a validação dos campos do boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"campo ausente ou acima do limite recebe HTTP 400 com a lista de campos\".</div><div>Técnica: análise de valor limite (101, 151 e 4001) e partição de equivalência (ausente).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Textos acima do limite preparados.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: um campo inválido por chamada. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 com o campo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim criado com dado inválido.</div>",
+    "parametros": {
+      "municipio": "101",
+      "titulo": "151",
+      "texto": "4001"
+    }
+  },
+  {
+    "titulo": "Validar município inexistente na UF e IBGE fora do ar",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-08</div><div>Objetivo: verificar a validação de município pelo IBGE.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"município inexistente na UF recebe HTTP 422 e IBGE fora do ar recebe HTTP 503\".</div><div>Técnica: partição de equivalência, classe inválida e indisponibilidade de dependência.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Observatório local para o passo 2; voltar a URL certa ao final.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome. Observatório local para o passo 2.</div><div>Inputs: município inventado e IBGE inacessível. Valores em Parameter values.</div><div>Outputs esperados: HTTP 422 e HTTP 503.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim criado com município inválido ou erro 500.</div>",
+    "parametros": {
+      "municipio": "Cidade Inventada",
+      "url": "https://ibge-inexistente.invalid/"
+    }
+  },
+  {
+    "titulo": "Validar boletim com dados pessoais no título ou no texto",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-09</div><div>Objetivo: verificar o bloqueio de dados pessoais nos boletins.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"título ou texto com e-mail, telefone ou CPF recebe HTTP 422\".</div><div>Técnica: partição de equivalência, classe inválida (dado pessoal).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: telefone no texto e e-mail no título. Valores em Parameter values.</div><div>Outputs esperados: HTTP 422 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim publicado com dado pessoal.</div>",
+    "parametros": {
+      "texto": "Dúvidas, ligar para 16 99999-0000",
+      "titulo": "Contato gestor.teste@valence.dev"
+    }
+  },
+  {
+    "titulo": "Validar limite de escritas do gestor por minuto",
+    "descricaoHtml": "<div>Identificador: CT-7.2.2-10</div><div>Objetivo: verificar o limite de escrita.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Publicar boletim sem duplicar; critério \"mais de 20 publicações, edições ou remoções por minuto do mesmo gestor recebe HTTP 429 com o cabeçalho Retry-After\".</div><div>Técnica: análise de valor limite (20 e 21).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Laço do PowerShell com o token do gestor; remover os boletins de teste depois.</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: 21 escritas em menos de 1 minuto. Valores em Parameter values.</div><div>Outputs esperados: HTTP 429 na 21.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: escrita 21 aceita.</div>",
+    "parametros": {
+      "vezes": "20"
+    }
+  },
+  {
+    "titulo": "Validar edição do boletim pelo gestor autor",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-01</div><div>Objetivo: verificar a edição do boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"edição recebe HTTP 200 com o boletim atualizado e a data de atualização\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: caso CT-7.2.2-01 executado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: novo título. Valores em Parameter values.</div><div>Outputs esperados: boletim atualizado.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: edição recusada ou atualizadoEm nulo.</div>",
+    "parametros": {
+      "titulo": "Alerta de cigarrinha atualizado"
+    }
+  },
+  {
+    "titulo": "Validar edição de boletim com dados inválidos",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-02</div><div>Objetivo: verificar que a edição segue as regras da publicação.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"edição aceita as mesmas regras de campos, IBGE e dados pessoais da publicação\".</div><div>Técnica: partição de equivalência e análise de valor limite.</div><div>Preparação: caso CT-7.2.2-01 executado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: título longo, município inventado e telefone no texto. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400, 422 e 422.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim salvo com dado inválido.</div>",
+    "parametros": {
+      "titulo": "151",
+      "municipio": "Cidade Inventada",
+      "texto": "Falar no 16 99999-0000"
+    }
+  },
+  {
+    "titulo": "Validar remoção do boletim pelo gestor autor",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-03</div><div>Objetivo: verificar a remoção do boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"remoção recebe HTTP 204 e o boletim deixa de aparecer na consulta pública\".</div><div>Técnica: transição de estado (publicado para removido).</div><div>Preparação: boletim do gestor publicado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: remoção pelo autor. Valores em Parameter values.</div><div>Outputs esperados: boletim fora da consulta pública.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim ainda visível.</div>",
+    "parametros": {
+      "uf": "SP"
+    }
+  },
+  {
+    "titulo": "Validar edição e remoção por outro gestor e por agrônomo",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-04</div><div>Objetivo: verificar que só o autor altera o boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"somente o gestor autor edita ou remove; outro gestor recebe HTTP 403 e AGRONOMO recebe HTTP 403\".</div><div>Técnica: tabela de decisão por papel e autor.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Segundo gestor e agrônomo de teste no Observatório.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: PUT e DELETE por outro gestor e por agrônomo. Valores em Parameter values.</div><div>Outputs esperados: HTTP 403 em todos.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim alterado por quem não é autor.</div><div>Notas: se o README tiver só um gestor, pedir ao Guilherme um segundo gestor de teste antes da execução.</div>",
+    "parametros": {
+      "outroGestor": "segundo gestor de teste do README do valence-dotnet",
+      "agronomo": "agrônomo de teste do README do valence-dotnet"
+    }
+  },
+  {
+    "titulo": "Validar edição e remoção de boletim inexistente",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-05</div><div>Objetivo: verificar o tratamento de boletim inexistente.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"boletim inexistente recebe HTTP 404 ao editar ou remover\".</div><div>Técnica: partição de equivalência, classe inválida.</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login).</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: id inexistente. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200, 204 ou 500.</div>",
+    "parametros": {
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar edição e remoção sem token e com token expirado",
+    "descricaoHtml": "<div>Identificador: CT-7.2.3-06</div><div>Objetivo: verificar a autenticação na edição e remoção.</div><div>PBI e critério de aceite: [Boletins do gestor] Gestor - Editar e remover meu boletim; critério \"requisição sem token ou com token expirado recebe HTTP 401\".</div><div>Técnica: partição de equivalência (sem token e token expirado).</div><div>Preparação: Observatório no ar; gestor de teste do README do valence-dotnet; Swagger autorizado com o token do gestor (POST /api/auth/login). Token antigo guardado, ou Observatório local com Jwt__ExpiracaoMinutos=1.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: sem token e token expirado. Valores em Parameter values.</div><div>Outputs esperados: HTTP 401.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim alterado sem autenticação válida.</div>",
+    "parametros": {
+      "token": "token do gestor emitido há mais de 120 minutos"
+    }
+  },
+  {
+    "titulo": "Validar consulta pública da lista de boletins",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-01</div><div>Objetivo: verificar a lista pública de boletins.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"consulta da lista de boletins sem login; lista paginada por deslocamento e registroRetornado (de 1 a 100), com total de registros e links HATEOAS\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Pelo menos 2 boletins publicados.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: lista com paginação e filtros. Valores em Parameter values.</div><div>Outputs esperados: lista paginada e filtrada.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 401 ou links ausentes.</div>",
+    "parametros": {
+      "registros": "10"
+    }
+  },
+  {
+    "titulo": "Validar detalhe público de boletim",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-02</div><div>Objetivo: verificar o detalhe do boletim.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"consulta do detalhe sem login; detalhe mostra id, município, UF, título, texto, data de criação, data de atualização e links; datas em UTC no formato ISO-8601\".</div><div>Técnica: partição de equivalência, classe válida.</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Boletim publicado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: id de boletim existente. Valores em Parameter values.</div><div>Outputs esperados: detalhe completo.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: campo ausente ou data fora de UTC.</div>",
+    "parametros": {
+      "sufixo": "Z"
+    }
+  },
+  {
+    "titulo": "Validar lista de boletins vazia",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-03</div><div>Objetivo: verificar a resposta sem boletins.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"lista sem boletins recebe HTTP 204 sem corpo\".</div><div>Técnica: partição de equivalência (lista vazia).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger. Nenhum boletim do Acre.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: filtro sem boletins. Valores em Parameter values.</div><div>Outputs esperados: HTTP 204.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 com lista vazia.</div>",
+    "parametros": {
+      "uf": "AC"
+    }
+  },
+  {
+    "titulo": "Validar boletim inexistente e removido",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-04</div><div>Objetivo: verificar o detalhe de boletim indisponível.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"boletim inexistente ou removido recebe HTTP 404\".</div><div>Técnica: partição de equivalência, classes inválidas.</div><div>Preparação: caso CT-7.2.3-03 executado.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: id inexistente e id removido. Valores em Parameter values.</div><div>Outputs esperados: HTTP 404 nos dois.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: boletim removido devolvido.</div>",
+    "parametros": {
+      "inexistente": "999999"
+    }
+  },
+  {
+    "titulo": "Validar paginação de boletins fora da faixa",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-05</div><div>Objetivo: verificar a validação da paginação.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"lista paginada por deslocamento e registroRetornado (de 1 a 100)\".</div><div>Técnica: análise de valor limite (0, 101 e -1).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET publicado no Azure App Service (/swagger), navegador Chrome.</div><div>Inputs: paginação fora da faixa. Valores em Parameter values.</div><div>Outputs esperados: HTTP 400 nas três.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: HTTP 200 ou 500.</div>",
+    "parametros": {
+      "maximo": "101"
+    }
+  },
+  {
+    "titulo": "Validar limite de requisições na consulta de boletins",
+    "descricaoHtml": "<div>Identificador: CT-7.2.4-06</div><div>Objetivo: verificar o limite na consulta de boletins.</div><div>PBI e critério de aceite: [Boletins do gestor] Cidadão - Consultar boletins publicados; critério \"mais de 60 requisições por minuto do mesmo IP recebe HTTP 429 com o cabeçalho Retry-After\".</div><div>Técnica: análise de valor limite (60 e 61).</div><div>Preparação: Observatório no ar com focos de MILHO em Ribeirão Preto/SP gerados nos Epics 3 a 5; nenhum login no Swagger.</div><div>Ambiente: Swagger do Observatório .NET no Azure e PowerShell para repetir requisições.</div><div>Inputs: 61 consultas em menos de 1 minuto. Valores em Parameter values.</div><div>Outputs esperados: HTTP 429 na 61.</div><div>Critério de saída: todos os passos com o resultado obtido igual ao esperado.</div><div>Condições de falha: chamada 61 aceita.</div>",
+    "parametros": {
+      "vezes": "60"
+    }
+  }
+]
