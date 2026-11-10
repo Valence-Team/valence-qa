@@ -1,0 +1,5 @@
+perfil-edge/
+prints-tc/
+*.whl
+__pycache__/
+.env
